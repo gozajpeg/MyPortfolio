@@ -1,0 +1,64 @@
+@import "tailwindcss";
+
+body {
+  margin: 0;
+  background-color: #0a0a0a;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Remove default blue focus outline from all elements (like buttons and links) */
+*:focus {
+  outline: none !important;
+}
+
+/* Remove mobile tap blue highlight */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent images from being highlighted or dragged */
+img {
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Change text selection color from default blue to a sleek monochrome */
+::selection {
+  background: #333333;
+  color: #ededed;
+}
+::-moz-selection {
+  background: #333333;
+  color: #ededed;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Smooth page transition animation */
+@keyframes pageFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-page-in {
+  animation: pageFadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}

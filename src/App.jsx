@@ -42,24 +42,37 @@ function App() {
       <div className="min-h-screen md:h-screen w-full flex flex-col md:flex-row bg-[#0a0a0a] text-[#ededed] font-sans box-border md:overflow-hidden">
       
       {/* Pane 1: Navigation / Branding */}
-      <aside className="w-full md:w-[35%] lg:w-1/3 p-8 md:p-12 lg:p-16 flex flex-col justify-center border-b md:border-b-0 md:border-r border-[#222222] md:h-full md:overflow-y-auto no-scrollbar">
-        <div className="flex items-center gap-4 mb-2">
-          <img src={gozagrayImg} alt="Logo" className="w-14 h-14 md:w-16 md:h-16 shrink-0 object-contain" />
-          <h1 className="text-[clamp(1.5rem,3vw,2rem)] font-extralight tracking-[-0.02em] text-left leading-tight">
-            Rommel Angelo T. Goza
-          </h1>
+      <aside className="w-full md:w-[35%] lg:w-1/3 p-8 md:p-12 lg:p-16 flex flex-col border-b md:border-b-0 md:border-r border-[#222222] md:h-full md:overflow-y-auto no-scrollbar">
+        {/* Main Nav Content - Centered */}
+        <div className="flex-grow flex flex-col justify-center">
+          <div className="flex items-center gap-4 mb-2">
+            <img src={gozagrayImg} alt="Logo" className="w-14 h-14 md:w-16 md:h-16 shrink-0 object-contain" />
+            <h1 className="text-[clamp(1.5rem,3vw,2rem)] font-extralight tracking-[-0.02em] text-left leading-tight">
+              Rommel Angelo T. Goza
+            </h1>
+          </div>
+          <p className="text-xs md:text-sm font-normal tracking-[0.3em] uppercase text-[#737373] mb-12 text-left">
+            Portfolio
+          </p>
+          
+          <nav className="flex flex-col gap-2 md:gap-4">
+            <NavLink to="/about" className={navLinkClass}>About Me</NavLink>
+            <NavLink to="/projects" className={navLinkClass}>Projects</NavLink>
+            <NavLink to="/skills" className={navLinkClass}>Skills</NavLink>
+            <NavLink to="/contact" className={navLinkClass}>Contact</NavLink>
+            <NavLink to="/socials" className={navLinkClass}>Socials</NavLink>        
+          </nav>
         </div>
-        <p className="text-xs md:text-sm font-normal tracking-[0.3em] uppercase text-[#737373] mb-12 text-left">
-          Portfolio
-        </p>
-        
-        <nav className="flex flex-col gap-2 md:gap-4">
-          <NavLink to="/about" className={navLinkClass}>About Me</NavLink>
-          <NavLink to="/projects" className={navLinkClass}>Projects</NavLink>
-          <NavLink to="/skills" className={navLinkClass}>Skills</NavLink>
-          <NavLink to="/contact" className={navLinkClass}>Contact</NavLink>
-          <NavLink to="/socials" className={navLinkClass}>Socials</NavLink>        
-        </nav>
+
+        {/* Bottom Footer Signature */}
+        <div className="pt-16 md:pt-8 mt-auto flex items-center gap-4 group cursor-default">
+          <img src={gozagrayImg} alt="Goza Logo" className="w-5 h-5 object-contain grayscale opacity-70 group-hover:opacity-100 transition-opacity duration-500" />
+          <div className="flex flex-col gap-0.5">
+            <span className="text-[#737373] group-hover:text-[#ededed] text-[10px] tracking-[0.2em] uppercase font-light transition-colors duration-500">
+              © 2026 Rommel Angelo Goza
+            </span>
+          </div>
+        </div>
       </aside>
 
       {/* Pane 2: Content Display Area */}

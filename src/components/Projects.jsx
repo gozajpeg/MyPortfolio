@@ -48,28 +48,33 @@ function Projects() {
   ];
 
   const otherExperiments = {
-    'Screensavers': [
-      {
-        title: 'Canvas ScreenSaver',
-        description: 'Spotify based',
-        tech: 'Python / Tkinter',
-        image: ss1Img,
-      },
-      {
-        title: 'Environment Time/Day Sync ScreenSaver',
-        description: '',
-        tech: 'Python / Tkinter',
-        image: ss2Img,
-      }
-    ],
-    'Logos & Branding': [
-      {
-        title: 'RAG',
-        description: 'A custom logo and visual identity created for my personal brand, reflecting my style and values.',
-        tech: 'Framer/Figma',
-        image: gozaLogoImg,
-      }
-    ]
+    'Screensavers': {
+      link: 'https://github.com/gozajpeg/Screensavers/releases',
+      items: [
+        {
+          title: 'Canvas ScreenSaver',
+          description: 'Spotify based',
+          tech: 'Python / Tkinter',
+          image: ss1Img,
+        },
+        {
+          title: 'Environment Time/Day Sync ScreenSaver',
+          description: '',
+          tech: 'Python / Tkinter',
+          image: ss2Img,
+        }
+      ]
+    },
+    'Logos & Branding': {
+      items: [
+        {
+          title: 'RAG',
+          description: 'A custom logo and visual identity created for my personal brand, reflecting my style and values.',
+          tech: 'Framer/Figma',
+          image: gozaLogoImg,
+        }
+      ]
+    }
   };
 
   return (
@@ -123,8 +128,9 @@ function Projects() {
             Other Works
           </h3>
           <div className="flex flex-col gap-4">
-            {Object.entries(otherExperiments).map(([category, projects], catIndex) => {
+            {Object.entries(otherExperiments).map(([category, data], catIndex) => {
               const isExpanded = expandedCategory === category;
+              const projects = data.items;
               
               return (
                 <div key={catIndex} className="flex flex-col border border-[#222222] bg-[#0c0c0c]">
@@ -144,7 +150,23 @@ function Projects() {
 
                   {/* Accordion Content */}
                   {isExpanded && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 border-t border-[#222222] bg-[#0a0a0a] animate-page-in">
+                    <div className="flex flex-col border-t border-[#222222] bg-[#0a0a0a] animate-page-in">
+                      {data.link && (
+                        <div className="flex items-center justify-between px-6 pt-6 pb-2">
+                          <span className="text-[#737373] text-xs font-light tracking-widest uppercase">
+                            Get the collection
+                          </span>
+                          <a 
+                            href={data.link} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-[#ededed] hover:text-[#a3a3a3] text-[10px] md:text-xs tracking-widest uppercase transition-colors duration-300 flex items-center gap-2 border-b border-[#333333] hover:border-[#a3a3a3] pb-1"
+                          >
+                            Download <span className="text-[10px]">↗</span>
+                          </a>
+                        </div>
+                      )}
+                      <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 px-6 pb-6 ${data.link ? 'pt-4' : 'pt-6'}`}>
                       {projects.map((project, index) => (
                         <div key={index} className="group flex flex-col border border-[#222222] bg-[#0c0c0c] transition-all duration-300 hover:border-[#ededed] hover:bg-[#ededed] overflow-hidden">
                           
@@ -169,15 +191,26 @@ function Projects() {
                                 {project.description}
                               </p>
                             )}
-                            <div className="mt-auto pt-2">
+                          <div className="mt-auto pt-4 flex items-center justify-between gap-2">
                               <span className="inline-block px-2 py-1 border border-[#333333] group-hover:border-[#0a0a0a] text-[#555555] group-hover:text-[#0a0a0a] text-[10px] tracking-widest uppercase w-max transition-colors duration-300">
                                 {project.tech}
                               </span>
+                            {project.link && (
+                              <a 
+                                href={project.link} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-[#737373] group-hover:text-[#0a0a0a] hover:!opacity-60 text-[10px] tracking-widest uppercase transition-opacity duration-300 flex items-center gap-1"
+                              >
+                                View <span className="text-xs">↗</span>
+                              </a>
+                            )}
                             </div>
                           </div>
                         </div>
                       ))}
                     </div>
+                  </div>
                   )}
                 </div>
               );

@@ -8,6 +8,7 @@ import gozaLogoImg from '../assets/gozalogo.webp';
 
 function Projects() {
   const [selectedImage, setSelectedImage] = useState(null);
+  const [expandedCategory, setExpandedCategory] = useState(null);
 
   // Lock scrolling on the background when the modal is open
   useEffect(() => {
@@ -46,26 +47,30 @@ function Projects() {
     }
   ];
 
-  const otherProjects = [
-    {
-      title: 'Personal Branding & Identity Design',
-      description: 'A custom logo and visual identity created for my personal brand, reflecting my style and values.',
-      tech: 'Framer/Figma',
-      image: gozaLogoImg,
-    },
-    {
-      title: 'Canvas ScreenSaver',
-      description: 'Spotify based',
-      tech: 'Python / Tkinter',
-      image: ss1Img,
-    },
-    {
-      title: 'Environment Time/Day Sync ScreenSaver',
-      description: '',
-      tech: 'Python / Tkinter',
-      image: ss2Img,
-    }
-  ];
+  const otherExperiments = {
+    'Screensavers': [
+      {
+        title: 'Canvas ScreenSaver',
+        description: 'Spotify based',
+        tech: 'Python / Tkinter',
+        image: ss1Img,
+      },
+      {
+        title: 'Environment Time/Day Sync ScreenSaver',
+        description: '',
+        tech: 'Python / Tkinter',
+        image: ss2Img,
+      }
+    ],
+    'Logos & Branding': [
+      {
+        title: 'RAG',
+        description: 'A custom logo and visual identity created for my personal brand, reflecting my style and values.',
+        tech: 'Framer/Figma',
+        image: gozaLogoImg,
+      }
+    ]
+  };
 
   return (
     <div className="animate-page-in w-full">
@@ -112,42 +117,71 @@ function Projects() {
           </div>
         </div>
 
-        {/* Other Experiments */}
+        {/* Other Works Accordion */}
         <div>
           <h3 className="text-[#ededed] text-sm font-light tracking-[0.2em] uppercase mb-8 border-b border-[#222222] pb-4">
-            Other Experiments
+            Other Works
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {otherProjects.map((project, index) => (
-              <div key={index} className="group flex flex-col border border-[#222222] bg-[#0a0a0a] transition-all duration-300 hover:border-[#ededed] hover:bg-[#ededed] overflow-hidden">
-                
-                <div 
-                  className="w-full h-32 bg-[#1a1a1a] relative overflow-hidden border-b border-[#222222] group-hover:border-[#ededed] transition-colors duration-300 cursor-zoom-in"
-                  onClick={() => setSelectedImage(project.image)}
-                >
-                  <img 
-                    src={project.image} 
-                    alt={project.title} 
-                    className="w-full h-full object-contain p-4 opacity-50 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-500"
-                    onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.innerHTML = '<div class="flex items-center justify-center h-full text-[#333333] text-xs uppercase tracking-widest">Image Missing</div>'; }}
-                  />
-                </div>
+          <div className="flex flex-col gap-4">
+            {Object.entries(otherExperiments).map(([category, projects], catIndex) => {
+              const isExpanded = expandedCategory === category;
+              
+              return (
+                <div key={catIndex} className="flex flex-col border border-[#222222] bg-[#0c0c0c]">
+                  {/* Accordion Header */}
+                  <button
+                    type="button"
+                    onClick={() => setExpandedCategory(isExpanded ? null : category)}
+                    className="flex items-center justify-between p-6 w-full text-left hover:bg-[#111111] transition-colors duration-300 outline-none cursor-pointer group"
+                  >
+                    <span className="text-[#ededed] text-sm font-light tracking-[0.2em] uppercase group-hover:text-white">
+                      {category}
+                    </span>
+                    <span className="text-[#555555] font-light text-2xl leading-none group-hover:text-[#ededed] transition-colors duration-300">
+                      {isExpanded ? '−' : '+'}
+                    </span>
+                  </button>
 
-                <div className="flex flex-col gap-2 p-6 justify-center">
-                  <h4 className="text-[#ededed] group-hover:text-[#0a0a0a] text-sm font-light tracking-wider transition-colors duration-300">
-                    {project.title}
-                  </h4>
-                  {project.description && (
-                    <p className="text-[#737373] group-hover:text-[#333333] text-xs font-light transition-colors duration-300">
-                      {project.description}
-                    </p>
+                  {/* Accordion Content */}
+                  {isExpanded && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 border-t border-[#222222] bg-[#0a0a0a] animate-page-in">
+                      {projects.map((project, index) => (
+                        <div key={index} className="group flex flex-col border border-[#222222] bg-[#0c0c0c] transition-all duration-300 hover:border-[#ededed] hover:bg-[#ededed] overflow-hidden">
+                          
+                          <div 
+                            className="w-full h-32 bg-[#1a1a1a] relative overflow-hidden border-b border-[#222222] group-hover:border-[#ededed] transition-colors duration-300 cursor-zoom-in"
+                            onClick={() => setSelectedImage(project.image)}
+                          >
+                            <img 
+                              src={project.image} 
+                              alt={project.title} 
+                              className="w-full h-full object-contain p-4 opacity-50 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-500"
+                              onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.innerHTML = '<div class="flex items-center justify-center h-full text-[#333333] text-xs uppercase tracking-widest">Image Missing</div>'; }}
+                            />
+                          </div>
+
+                          <div className="flex flex-col gap-2 p-6 justify-center flex-grow">
+                            <h4 className="text-[#ededed] group-hover:text-[#0a0a0a] text-sm font-light tracking-wider transition-colors duration-300">
+                              {project.title}
+                            </h4>
+                            {project.description && (
+                              <p className="text-[#737373] group-hover:text-[#333333] text-xs font-light transition-colors duration-300">
+                                {project.description}
+                              </p>
+                            )}
+                            <div className="mt-auto pt-2">
+                              <span className="inline-block px-2 py-1 border border-[#333333] group-hover:border-[#0a0a0a] text-[#555555] group-hover:text-[#0a0a0a] text-[10px] tracking-widest uppercase w-max transition-colors duration-300">
+                                {project.tech}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   )}
-                  <span className="inline-block px-2 py-1 border border-[#333333] group-hover:border-[#0a0a0a] text-[#555555] group-hover:text-[#0a0a0a] text-[10px] tracking-widest uppercase w-max mt-2 transition-colors duration-300">
-                    {project.tech}
-                  </span>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 

@@ -4,6 +4,7 @@ import frenslynkImg from '../assets/FrensLynk.webp';
 import arhkilaImg from '../assets/Arhkila.webp';
 import ss1Img from '../assets/SS1.webp';
 import ss2Img from '../assets/SS2.webp';
+import ss3Img from '../assets/SS3.webp';
 import gozaLogoImg from '../assets/gozalogo.webp';
 
 function Projects() {
@@ -62,6 +63,12 @@ function Projects() {
           description: '',
           tech: 'Python / Tkinter',
           image: ss2Img,
+        },
+        {
+          title: 'Bouncing Logo',
+          description: 'Nostalgic "DVD Bouncing Animation" customizable with your own logo.',
+          tech: 'Python / Tkinter',
+          image: ss3Img,
         }
       ]
     },

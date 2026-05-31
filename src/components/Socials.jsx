@@ -3,6 +3,7 @@ function Socials() {
     { name: 'GitHub', url: 'https://github.com/gozajpeg/MyPortfolio', icon: 'https://cdn.simpleicons.org/github/ededed' },
     { name: 'Facebook', url: 'https://www.facebook.com/jelunatic.z', icon: 'https://cdn.simpleicons.org/facebook/ededed' },
     { name: 'Instagram', url: 'https://www.instagram.com/jelonaticz', icon: 'https://cdn.simpleicons.org/instagram/ededed' },
+    { name: 'Gmail', url: 'https://mail.google.com/mail/?view=cm&fs=1&to=ragoza.builds@gmail.com', icon: 'https://cdn.simpleicons.org/gmail/ededed' },
   ];
 
   return (

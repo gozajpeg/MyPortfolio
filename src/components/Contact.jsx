@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import gozaLogoImg from '../assets/gozalogo.webp';
+import gozaLogoImg from '../assets/logo/gozalogo.webp';
 
 function Contact() {
   const [status, setStatus] = useState('idle'); // 'idle' | 'submitting' | 'success' | 'error'

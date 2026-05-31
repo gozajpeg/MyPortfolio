@@ -1,21 +1,17 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import frenslynkImg from '../assets/FrensLynk.webp';
-import arhkilaImg from '../assets/Arhkila.webp';
-import ss1Img from '../assets/SS1.webp';
-import ss2Img from '../assets/SS2.webp';
-import ss3Img from '../assets/SS3.webp';
-import gozaLogoImg from '../assets/gozalogo.webp';
+import { primaryWorksCategories, otherWorksCategories } from '../data/Projects/projectData';
 
 function Projects() {
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [expandedCategory, setExpandedCategory] = useState(null);
 
   // Lock scrolling on the background when the modal is open
   useEffect(() => {
     const mainPane = document.querySelector('main');
     const asidePane = document.querySelector('aside');
-    if (selectedImage) {
+    if (selectedProject) {
       document.body.style.overflow = 'hidden';
       if (mainPane) mainPane.style.overflow = 'hidden';
       if (asidePane) asidePane.style.overflow = 'hidden';
@@ -29,60 +25,7 @@ function Projects() {
       if (mainPane) mainPane.style.overflow = '';
       if (asidePane) asidePane.style.overflow = '';
     };
-  }, [selectedImage]);
-
-  const featuredProjects = [
-    {
-      title: 'FrensLynk',
-      date: 'Est. Jan 2026',
-      role: 'Creator / Developer',
-      description: 'Social Utility Platform Empowering Real-Life Connections.',
-      image: frenslynkImg,
-    },
-    {
-      title: 'Arhkila',
-      date: '',
-      role: 'Lead Developer',
-      description: '',
-      image: arhkilaImg,
-    }
-  ];
-
-  const otherExperiments = {
-    'Screensavers': {
-      link: 'https://github.com/gozajpeg/Screensavers/releases',
-      items: [
-        {
-          title: 'Canvas ScreenSaver',
-          description: 'Spotify based',
-          tech: 'Python / Tkinter',
-          image: ss1Img,
-        },
-        {
-          title: 'Environment Time/Day Sync ScreenSaver',
-          description: '',
-          tech: 'Python / Tkinter',
-          image: ss2Img,
-        },
-        {
-          title: 'Bouncing Logo',
-          description: 'Nostalgic "DVD Bouncing Animation" customizable with your own logo.',
-          tech: 'Python / Tkinter',
-          image: ss3Img,
-        }
-      ]
-    },
-    'Logos & Branding': {
-      items: [
-        {
-          title: 'RAG',
-          description: 'A custom logo and visual identity created for my personal brand, reflecting my style and values.',
-          tech: 'Framer/Figma',
-          image: gozaLogoImg,
-        }
-      ]
-    }
-  };
+  }, [selectedProject]);
 
   return (
     <div className="animate-page-in w-full">
@@ -91,24 +34,37 @@ function Projects() {
       </h2>
 
       <div className="flex flex-col gap-16 w-full max-w-4xl">
-        {/* Featured Projects */}
-        <div>
-          <h3 className="text-[#ededed] text-sm font-light tracking-[0.2em] uppercase mb-8 border-b border-[#222222] pb-4">
-            Featured Work
-          </h3>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {featuredProjects.map((project, index) => (
-              <div key={index} className="group border border-[#222222] bg-[#0c0c0c] overflow-hidden transition-all duration-300 hover:border-[#ededed] flex flex-col">
+         {/* Primary/Featured Works Sections */}
+        {primaryWorksCategories.map((data, catIndex) => (
+          <div key={catIndex}>
+            <h3 className="text-[#ededed] text-sm font-light tracking-[0.2em] uppercase mb-8 border-b border-[#222222] pb-4">
+              {data.categoryTitle}
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {data.items.map((project, index) => (
                 <div 
-                  className="w-full h-48 bg-[#1a1a1a] overflow-hidden relative border-b border-[#222222] group-hover:border-[#ededed] transition-colors duration-300 cursor-zoom-in"
-                  onClick={() => setSelectedImage(project.image)}
+                  key={index} 
+                  className={`group border border-[#222222] bg-[#0c0c0c] overflow-hidden transition-all duration-300 hover:border-[#ededed] flex flex-col ${project.image || project.images ? 'cursor-pointer' : 'cursor-default'}`}
+                  onClick={() => {
+                    if (project.image || project.images) {
+                      setSelectedProject(project);
+                      setCurrentImageIndex(0);
+                    }
+                  }}
                 >
+                  <div 
+                    className="w-full h-40 bg-[#1a1a1a] overflow-hidden relative border-b border-[#222222] transition-colors duration-300"
+                  >
+                {project.image || (project.images && project.images.length > 0) ? (
                   <img 
-                    src={project.image} 
+                    src={project.image || project.images[0]} 
                     alt={project.title} 
                     className="w-full h-full object-contain p-6 opacity-50 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-500"
                     onError={(e) => { e.target.style.display = 'none'; e.target.parentElement.innerHTML = '<div class="flex items-center justify-center h-full text-[#333333] text-xs uppercase tracking-widest">Image Missing</div>'; }}
                   />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-[#333333] group-hover:text-[#555555] text-xs uppercase tracking-widest transition-colors duration-500">Coming Soon</div>
+                )}
                 </div>
                 <div className="p-6 md:p-8 flex flex-col gap-4 flex-grow">
                   <div>
@@ -124,10 +80,11 @@ function Projects() {
                     </p>
                   )}
                 </div>
-              </div>
-            ))}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        ))}
 
         {/* Other Works Accordion */}
         <div>
@@ -135,7 +92,8 @@ function Projects() {
             Other Works
           </h3>
           <div className="flex flex-col gap-4">
-            {Object.entries(otherExperiments).map(([category, data], catIndex) => {
+            {otherWorksCategories.map((data, catIndex) => {
+              const category = data.categoryTitle;
               const isExpanded = expandedCategory === category;
               const projects = data.items;
               
@@ -175,11 +133,19 @@ function Projects() {
                       )}
                       <div className={`grid grid-cols-1 md:grid-cols-2 gap-6 px-6 pb-6 ${data.link ? 'pt-4' : 'pt-6'}`}>
                       {projects.map((project, index) => (
-                        <div key={index} className="group flex flex-col border border-[#222222] bg-[#0c0c0c] transition-all duration-300 hover:border-[#ededed] hover:bg-[#ededed] overflow-hidden">
+                        <div 
+                          key={index} 
+                          className={`group flex flex-col border border-[#222222] bg-[#0c0c0c] transition-all duration-300 hover:border-[#ededed] hover:bg-[#ededed] overflow-hidden ${project.image || project.images ? 'cursor-pointer' : 'cursor-default'}`}
+                          onClick={() => {
+                            if (project.image || project.images) {
+                              setSelectedProject(project);
+                              setCurrentImageIndex(0);
+                            }
+                          }}
+                        >
                           
                           <div 
-                            className="w-full h-32 bg-[#1a1a1a] relative overflow-hidden border-b border-[#222222] group-hover:border-[#ededed] transition-colors duration-300 cursor-zoom-in"
-                            onClick={() => setSelectedImage(project.image)}
+                            className="w-full h-32 bg-[#1a1a1a] relative overflow-hidden border-b border-[#222222] transition-colors duration-300"
                           >
                             <img 
                               src={project.image} 
@@ -227,18 +193,69 @@ function Projects() {
 
       </div>
 
-      {/* Fullscreen Image Modal */}
-      {selectedImage && createPortal(
-        <div 
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0a0a0a]/95 backdrop-blur-sm p-4 md:p-8 cursor-zoom-out overflow-hidden overscroll-none touch-none"
-          onClick={() => setSelectedImage(null)}
-        >
-            <img 
-              src={selectedImage} 
-              alt="Fullscreen view" 
-              className="w-auto h-auto max-w-full max-h-[85vh] object-contain border border-[#222222] shadow-2xl"
-            />
-            <span className="absolute bottom-8 md:bottom-12 text-[#555555] text-xs tracking-[0.2em] uppercase">Click anywhere to close</span>
+      {/* Project Details Modal */}
+      {selectedProject && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#0a0a0a]/95 backdrop-blur-sm p-4 md:p-8">
+          {/* Overlay click to close */}
+          <div className="absolute inset-0 cursor-pointer" onClick={() => setSelectedProject(null)}></div>
+          
+          <div className="relative w-full max-w-5xl bg-[#0c0c0c] border border-[#222222] shadow-2xl flex flex-col md:flex-row overflow-hidden max-h-[90vh] z-10 animate-page-in">
+            {/* Close Button */}
+            <button onClick={() => setSelectedProject(null)} className="absolute top-4 right-4 z-20 text-[#555555] hover:text-[#ededed] text-3xl leading-none outline-none">&times;</button>
+
+            {/* Pane 1: Image Gallery */}
+            <div className="w-full md:w-3/5 bg-[#111111] relative flex items-center justify-center border-b md:border-b-0 md:border-r border-[#222222] min-h-[40vh] md:min-h-[60vh] group overflow-hidden">
+              {(() => {
+                const images = selectedProject.images || (selectedProject.image ? [selectedProject.image] : []);
+                if (images.length === 0) return <span className="text-[#333333] text-xs uppercase tracking-widest">No Image</span>;
+                
+                return (
+                  <>
+                    <img src={images[currentImageIndex]} alt={selectedProject.title} className="absolute inset-0 w-full h-full p-4 md:p-8 object-contain" />
+                    
+                    {/* Navigation Controls (Only show if multiple images) */}
+                    {images.length > 1 && (
+                      <>
+                        <button onClick={(e) => { e.stopPropagation(); setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1)); }} className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-[#0a0a0a]/80 border border-[#333333] text-[#ededed] hover:bg-[#ededed] hover:text-[#0a0a0a] transition-all duration-300 opacity-0 group-hover:opacity-100">&larr;</button>
+                        <button onClick={(e) => { e.stopPropagation(); setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1)); }} className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center bg-[#0a0a0a]/80 border border-[#333333] text-[#ededed] hover:bg-[#ededed] hover:text-[#0a0a0a] transition-all duration-300 opacity-0 group-hover:opacity-100">&rarr;</button>
+                        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                          {images.map((_, idx) => (
+                            <span key={idx} className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${idx === currentImageIndex ? 'bg-[#ededed]' : 'bg-[#333333]'}`}></span>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
+
+            {/* Pane 2: Content Details */}
+            <div className="w-full md:w-2/5 p-8 md:p-10 flex flex-col gap-6 overflow-y-auto bg-[#0c0c0c]">
+              <div>
+                <h3 className="text-[#ededed] text-2xl font-light tracking-wide">{selectedProject.title}</h3>
+                <div className="flex flex-wrap gap-x-4 gap-y-2 text-[#737373] text-xs tracking-widest uppercase mt-3">
+                  <span>{selectedProject.role || selectedProject.tech}</span>
+                  {selectedProject.date && <span>• {selectedProject.date}</span>}
+                </div>
+              </div>
+              <div className="h-px w-full bg-[#222222]"></div>
+              <p className="text-[#a3a3a3] text-sm font-light leading-relaxed whitespace-pre-wrap">
+                {selectedProject.summary || selectedProject.detailedDescription || selectedProject.description || "More details coming soon."}
+              </p>
+
+              {/* Language Tags */}
+              {selectedProject.languages && selectedProject.languages.length > 0 && (
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {selectedProject.languages.map((lang, idx) => (
+                    <span key={idx} className="px-3 py-1.5 border border-[#333333] bg-[#111111] text-[#a3a3a3] text-[10px] tracking-widest uppercase">
+                      {lang}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>,
         document.body
       )}

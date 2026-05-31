@@ -5,8 +5,8 @@ import About from './components/About'
 import Projects from './components/Projects'
 import Contact from './components/Contact'
 import Socials from './components/Socials'
-import gozagrayImg from './assets/gozagray.png'
-import gozablackImg from './assets/gozablack.png'
+import gozagrayImg from './assets/logo/gozagray.png'
+import gozablackImg from './assets/logo/gozablack.png'
 import './App.css'
 
 function App() {

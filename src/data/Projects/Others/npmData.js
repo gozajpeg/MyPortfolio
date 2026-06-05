@@ -1,6 +1,6 @@
-import { logoAssets } from '../../../assets/logo/logo';
+import gozagray from '../../../assets/logo/gozagray.png';
 
-const { gozalogoImg } = logoAssets;
+const { gozalogoImg } = gozagray;
 export const npmData = {
   categoryTitle: 'NPM Packages',
   link: 'Unreleased',

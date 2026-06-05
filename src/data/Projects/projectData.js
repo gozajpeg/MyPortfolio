@@ -1,6 +1,8 @@
 import { featuredData } from './Featured/featuredData';
 import { screensaverData } from './Others/screensaverData';
 import { logoData } from './Others/logoData';
+import { npmData } from './Others/npmData';
+
 
 export const primaryWorksCategories = [
   featuredData,
@@ -9,4 +11,5 @@ export const primaryWorksCategories = [
 export const otherWorksCategories = [
   screensaverData,
   logoData,
+  npmData,
 ];

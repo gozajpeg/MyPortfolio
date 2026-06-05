@@ -2,7 +2,7 @@ import { logoAssets } from '../../../assets/logo/logo';
 
 const { gozalogoImg } = logoAssets;
 export const npmData = {
-  categoryTitle: 'Open Source / NPM Packages',
+  categoryTitle: 'NPM Packages',
   link: 'Unreleased',
   items: [
     {

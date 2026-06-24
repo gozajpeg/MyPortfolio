@@ -3,7 +3,6 @@ import { HashRouter as Router, Routes, Route, NavLink } from 'react-router-dom'
 import Skills from './components/Skills'
 import About from './components/About'
 import Projects from './components/Projects'
-import Contact from './components/Contact'
 import Socials from './components/Socials'
 import gozagrayImg from './assets/logo/gozagray.png'
 import gozablackImg from './assets/logo/gozablack.png'
@@ -59,7 +58,6 @@ function App() {
             <NavLink to="/about" className={navLinkClass}>About Me</NavLink>
             <NavLink to="/projects" className={navLinkClass}>Projects</NavLink>
             <NavLink to="/skills" className={navLinkClass}>Skills</NavLink>
-            <NavLink to="/contact" className={navLinkClass}>Contact</NavLink>
             <NavLink to="/socials" className={navLinkClass}>Socials</NavLink>        
           </nav>
         </div>
@@ -86,7 +84,6 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/projects" element={<Projects />} />
           <Route path="/skills" element={<Skills />} />
-          <Route path="/contact" element={<Contact />} />
           <Route path="/socials" element={<Socials />} />
         </Routes>
       </main>

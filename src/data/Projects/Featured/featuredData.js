@@ -1,5 +1,6 @@
 import {frenslynkImg} from '../../../assets/FrensLynk/frenslynk';
 import {polluImg} from '../../../assets/Pollu.io/pollu';
+import {gradiatorImg} from '../../../assets/Gradiator/gradiator';
 
 export const featuredData = {
   categoryTitle: 'Featured Work',
@@ -23,6 +24,16 @@ export const featuredData = {
       summary: 'Pollu.io is a real-time spatial monitoring platform for air quality and pollution data. It empowers users to visualize and analyze environmental conditions, enabling informed decisions for healthier living.',
       image: polluImg.Pollu1,
       images: [polluImg.Pollu1, polluImg.Pollu2, polluImg.Pollu3],
+    },
+    {
+      title: 'Gradiator',
+      date: 'Est. June 2026',
+      role: 'Creator / Developer',
+      description: 'Gradiant Generator and Color Palette Tool for Designers and Developers.',
+      languages: ['React', 'Tailwind'],
+      summary: 'Gradiator is a gradient generator and color palette tool designed for designers and developers. It allows users to create, customize, and export gradients and color palettes for use in web and graphic design projects.',
+      image: gradiatorImg.Gradiator01,
+      images: [gradiatorImg.Gradiator01, gradiatorImg.Gradiator02, gradiatorImg.Gradiator03],
     },
     {
       title: 'Coming Soon',

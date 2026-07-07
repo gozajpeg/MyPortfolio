@@ -1,6 +1,7 @@
 import {frenslynkImg} from '../../../assets/FrensLynk/frenslynk';
 import {polluImg} from '../../../assets/Pollu.io/pollu';
 import {gradiatorImg} from '../../../assets/Gradiator/gradiator';
+import {auditrazeImg} from '../../../assets/AudiTraze/auditraze';
 
 export const featuredData = {
   categoryTitle: 'Featured Work',
@@ -34,6 +35,16 @@ export const featuredData = {
       summary: 'Gradiator is a gradient generator and color palette tool designed for designers and developers. It allows users to create, customize, and export gradients and color palettes for use in web and graphic design projects.',
       image: gradiatorImg.Gradiator01,
       images: [gradiatorImg.Gradiator01, gradiatorImg.Gradiator02, gradiatorImg.Gradiator03],
+    },
+    {
+      title: 'AudiTraze',
+      date: 'Est. July 2026',
+      role: 'Founder / Developer',
+      description: 'AudiTraze specialize in securing, storing and managing a tamper-proof audit logs in real-time.',
+      languages: ['React', 'Tailwind', 'Node.js/Fastify'],
+      summary: 'AudiTraze is a platform where you can store and manage your audit-logs in real-time. It provides a secure and tamper-proof solutions for business and/or organizations to ensure the integrity and authenticity of their audit logs. AudiTraze can\'t be modifired or tampered data once it is stored, securing the records and audits in one place.',
+      image: auditrazeImg.AudiTraze01,
+      images: [auditrazeImg.AudiTraze01],
     },
     {
       title: 'Coming Soon',

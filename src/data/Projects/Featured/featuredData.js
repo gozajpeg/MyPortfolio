@@ -44,7 +44,7 @@ export const featuredData = {
       languages: ['React', 'Tailwind', 'Node.js/Fastify'],
       summary: 'AudiTraze is a platform where you can store and manage your audit-logs in real-time. It provides a secure and tamper-proof solutions for business and/or organizations to ensure the integrity and authenticity of their audit logs. AudiTraze can\'t be modifired or tampered data once it is stored, securing the records and audits in one place.',
       image: auditrazeImg.AudiTraze01,
-      images: [auditrazeImg.AudiTraze01],
+      images: [auditrazeImg.AudiTraze01, auditrazeImg.AudiTraze02, auditrazeImg.AudiTraze03],
     },
     {
       title: 'Coming Soon',

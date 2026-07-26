@@ -46,10 +46,7 @@ export default function FloatMessageBar() {
       });
 
       // Using mode: 'no-cors' for GET bypasses CORS headers check.
-      await fetch(`https://myportfolio.ragoza-builds.workers.dev/api/message?${params.toString()}`, {
-        method: 'GET',
-        mode: 'no-cors',
-      });
+      await fetch(`https://myportfolio.ragoza-builds.workers.dev/api/message?${params.toString()}`);
 
       setStatus('success');
       setMessage('');

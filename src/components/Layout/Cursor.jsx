@@ -1,191 +1,187 @@
 import { useState, useEffect, useRef } from 'react';
 
 function CustomCursor() {
-    const [position, setPosition] = useState({ x: 0, y: 0 });
-    const [cursorType, setCursorType] = useState('default'); // default | pointer | text
-    const [isClicking, setIsClicking] = useState(false);
-    const [isIdle, setIsIdle] = useState(false);
-    const idleTimerRef = useRef(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [cursorType, setCursorType] = useState('default'); // default | pointer | text
+  const [hoverText, setHoverText] = useState('');
+  const [isClicking, setIsClicking] = useState(false);
+  const [isIdle, setIsIdle] = useState(false);
+  const [hasMoved, setHasMoved] = useState(false);
+  
+  const idleTimerRef = useRef(null);
 
-    useEffect(() => {
-        const resetIdleTimer = () => {
-            setIsIdle(false);
-            if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-            idleTimerRef.current = setTimeout(() => setIsIdle(true), 5000);
-        };
+  useEffect(() => {
+    const resetIdleTimer = () => {
+      setIsIdle(false);
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+      idleTimerRef.current = setTimeout(() => {
+        setIsIdle(true);
+      }, 5000);
+    };
 
-        const moveCursor = (e) => {
-            setPosition({ x: e.clientX, y: e.clientY });
-            resetIdleTimer();
+    const moveCursor = (e) => {
+      setPosition({ x: e.clientX, y: e.clientY });
+      setHasMoved(true);
+      resetIdleTimer();
 
-            const target = e.target;
-            if (target.closest('a, button, [role="button"]')) {
-                setCursorType('pointer');
-            } else if (target.closest('p, h1, h2, h3, h4, span, input, textarea')) {
-                setCursorType('text');
-            } else {
-                setCursorType('default');
-            }
-        };
+      const target = e.target;
+      const hoverable = target.closest('a, button, [role="button"], .keycap-queue');
+      const isProjectImg = target.closest('.cursor-zoom-in, [onClick*="Lightbox"], [onClick*="lightbox"]');
 
-        const handleMouseDown = () => setIsClicking(true);
-        const handleMouseUp = () => setIsClicking(false);
+      if (hoverable) {
+        setCursorType('pointer');
+        
+        // Smart Context Text Extraction:
+        // Try reading explicit title attributes, button texts, or adjacent link handles
+        const titleAttr = hoverable.getAttribute('title');
+        const ariaLabel = hoverable.getAttribute('aria-label');
+        const textContent = hoverable.innerText || hoverable.textContent || '';
+        const normalized = textContent.trim().toLowerCase();
 
-        resetIdleTimer();
-
-        window.addEventListener('mousemove', moveCursor);
-        window.addEventListener('mousedown', handleMouseDown);
-        window.addEventListener('mouseup', handleMouseUp);
-
-        return () => {
-            window.removeEventListener('mousemove', moveCursor);
-            window.removeEventListener('mousedown', handleMouseDown);
-            window.removeEventListener('mouseup', handleMouseUp);
-            if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
-        };
-    }, []);
-
-    const getCursorStyles = () => {
-        const base = {
-            left: position.x,
-            top: position.y,
-            transform: `translate(-50%, -50%) ${isClicking ? 'scale(0.85)' : 'scale(1)'}`,
-        };
-
-        if (cursorType === 'pointer') {
-            return {
-                ...base,
-                width: '20px',
-                height: '20px',
-                backgroundColor: '#ff0000ff',
-                border: '3px solid #050505',
-                boxShadow: '4px 4px 0px #050505',
-                transform: `translate(-50%, -50%) rotate(45deg) ${isClicking ? 'scale(0.85)' : 'scale(1)'}`,
-            };
+        if (titleAttr) {
+          setHoverText(titleAttr);
+        } else if (ariaLabel) {
+          setHoverText(ariaLabel);
+        } else if (normalized.includes('gmail') || hoverable.href?.includes('mailto:')) {
+          setHoverText('connect with gmail');
+        } else if (normalized.includes('github')) {
+          setHoverText('visit github');
+        } else if (normalized.includes('linkedin')) {
+          setHoverText('visit linkedin');
+        } else if (normalized.includes('instagram')) {
+          setHoverText('visit instagram');
+        } else if (normalized.includes('get in touch') || normalized.includes('message')) {
+          setHoverText('send message');
+        } else if (normalized.includes('open cv') || normalized.includes('resume')) {
+          setHoverText('open cv profile');
+        } else if (normalized.includes('view project')) {
+          setHoverText('view live demo');
+        } else if (['featured', 'screensavers', 'logos', 'npm', 'about', 'skills', 'connect', 'home'].some(term => normalized === term)) {
+          setHoverText(`go to ${normalized}`);
+        } else if (textContent.length > 0 && textContent.length < 24) {
+          setHoverText(normalized);
+        } else {
+          setHoverText('click');
         }
+      } else if (isProjectImg || (target.tagName === 'IMG' && target.closest('.cursor-zoom-in'))) {
+        setCursorType('pointer');
+        setHoverText('zoom image');
+      } else if (target.closest('p, h1, h2, h3, h4, span, input, textarea')) {
+        setCursorType('text');
+        setHoverText('');
+      } else {
+        setCursorType('default');
+        setHoverText('');
+      }
+    };
 
-        if (cursorType === 'text') {
-            return {
-                ...base,
-                width: '4px',
-                height: '28px',
-                backgroundColor: '#050505',
-                border: 'none',
-                boxShadow: 'none',
-            };
-        }
+    const handleMouseDown = () => {
+      setIsClicking(true);
+      setIsIdle(false);
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    };
+    const handleMouseUp = () => {
+      setIsClicking(false);
+      resetIdleTimer();
+    };
 
-        // default
-        return {
-            ...base,
-            width: '20px',
+    window.addEventListener('mousemove', moveCursor);
+    window.addEventListener('mousedown', handleMouseDown);
+    window.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      window.removeEventListener('mousemove', moveCursor);
+      window.removeEventListener('mousedown', handleMouseDown);
+      window.removeEventListener('mouseup', handleMouseUp);
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
+    };
+  }, []);
+
+  // Figma cursor offsets (placed at bottom right of arrow point)
+  const getPillOffset = () => {
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    
+    // Dynamic pill width estimate based on string content to prevent clipping
+    const textLen = getPillText().length;
+    const pillWidth = Math.max(60, textLen * 6.5 + 16);
+    const pillHeight = 22;
+    const cursorSize = 18; // offset from arrow pointer
+
+    let left = cursorSize - 2;
+    let top = cursorSize - 2;
+
+    // Shift left if cursor is near right edge
+    if (position.x + left + pillWidth > vw) {
+      left = -(pillWidth + 4);
+    }
+    // Shift top if cursor is near bottom edge
+    if (position.y + top + pillHeight > vh) {
+      top = -(pillHeight + 4);
+    }
+
+    return { left: `${left}px`, top: `${top}px` };
+  };
+
+  const getPillText = () => {
+    if (isIdle) return 'idle';
+    if (isClicking) return 'click';
+    if (cursorType === 'pointer' && hoverText) return hoverText;
+    if (cursorType === 'text') return 'edit';
+    return 'move';
+  };
+
+  const getPillBg = () => {
+    if (isClicking) return 'bg-[#FF3884] text-white'; // Custom bright click accent
+    if (cursorType === 'pointer') return 'bg-[#a3e635] text-black'; // hover color
+    if (cursorType === 'text') return 'bg-[#00F0FF] text-black'; // edit color
+    return 'bg-[#9F4FFF] text-white'; // Figma default purple
+  };
+
+  if (!hasMoved) return null;
+
+  return (
+    <>
+      <div
+        className="fixed pointer-events-none z-[9999] hidden md:block"
+        style={{
+          left: position.x,
+          top: position.y,
+          transform: isClicking ? 'scale(0.92)' : 'scale(1)',
+          transition: 'transform 0.08s ease-out',
+        }}
+      >
+        {/* Figma styled solid cursor vector arrow */}
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ transform: 'translate(-2px, -2px)' }}
+        >
+          <path
+            d="M2.5 1.5L18.5 9.5L10.5 11.5L2.5 1.5Z"
+            fill={isClicking ? '#FF3884' : '#9F4FFF'}
+            stroke="white"
+            strokeWidth="2"
+            strokeLinejoin="round"
+          />
+        </svg>
+
+        {/* Figma styled state indicator tag pill */}
+        <div
+          className={`absolute flex items-center justify-center rounded px-2.5 font-mono text-[9px] font-extrabold uppercase tracking-wide select-none shadow-[0_4px_12px_rgba(0,0,0,0.5)] border border-white/20 whitespace-nowrap transition-colors duration-150 ${getPillBg()}`}
+          style={{
+            ...getPillOffset(),
             height: '20px',
-            backgroundColor: '#37ff00ff',
-            border: '2px solid #050505',
-            boxShadow: '3px 3px 0px #220035ff',
-        };
-    };
-
-    // Determine which quadrant of the screen the cursor is in,
-    // so the tooltip + arrow can flip to the opposite side and never clip off-screen.
-    const getTooltipPlacement = () => {
-        const vw = window.innerWidth;
-        const vh = window.innerHeight;
-
-        const isRight = position.x > vw / 2;
-        const isBottom = position.y > vh / 2;
-
-        return {
-            horizontal: isRight ? 'left' : 'right', // opposite side of cursor = more room
-            vertical: isBottom ? 'top' : 'bottom',
-        };
-    };
-
-    const renderIdleTooltip = () => {
-        if (!isIdle) return null;
-
-        const { horizontal, vertical } = getTooltipPlacement();
-
-        const configs = {
-            'right-bottom': {
-                wrapperStyle: { left: position.x, top: position.y },
-                svgStyle: { top: 0, left: 0 },
-                path: 'M55 55 Q35 45 15 15',
-                labelStyle: { top: '55px', left: '45px' },
-                labelRotate: '-rotate-2',
-            },
-            'left-bottom': {
-                wrapperStyle: { left: position.x, top: position.y },
-                svgStyle: { top: 0, right: 0 },
-                path: 'M15 55 Q35 45 55 15',
-                labelStyle: { top: '55px', right: '45px' },
-                labelRotate: 'rotate-2',
-            },
-            'right-top': {
-                wrapperStyle: { left: position.x, top: position.y },
-                svgStyle: { bottom: 0, left: 0 },
-                path: 'M55 15 Q35 25 15 55',
-                labelStyle: { bottom: '55px', left: '45px' },
-                labelRotate: 'rotate-2',
-            },
-            'left-top': {
-                wrapperStyle: { left: position.x, top: position.y },
-                svgStyle: { bottom: 0, right: 0 },
-                path: 'M15 15 Q35 25 55 55',
-                labelStyle: { bottom: '55px', right: '45px' },
-                labelRotate: '-rotate-2',
-            },
-        };
-
-        const key = `${horizontal}-${vertical}`;
-        const config = configs[key];
-
-        return (
-            <div
-                className="fixed pointer-events-none z-[9998] hidden md:block animate-idle-pop"
-                style={config.wrapperStyle}
-            >
-                <svg
-                    width="70"
-                    height="70"
-                    viewBox="0 0 70 70"
-                    className="absolute"
-                    style={config.svgStyle}
-                >
-                    <path
-                        d={config.path}
-                        stroke="#050505"
-                        strokeWidth="2.5"
-                        fill="none"
-                        markerEnd="url(#arrowhead)"
-                    />
-                    <defs>
-                        <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-                            <path d="M0,0 L8,4 L0,8 Z" fill="#050505" />
-                        </marker>
-                    </defs>
-                </svg>
-
-                <div
-                    className={`absolute bg-[#fde047] border-4 border-[#050505] shadow-[4px_4px_0px_#050505] px-3 py-1.5 font-display font-black text-xs uppercase tracking-wide text-[#050505] whitespace-nowrap ${config.labelRotate}`}
-                    style={config.labelStyle}
-                >
-                    This is your mouse cursor
-                </div>
-            </div>
-        );
-    };
-
-    return (
-        <>
-            <div
-                className="fixed pointer-events-none z-[9999] transition-[width,height,background-color,box-shadow] duration-150 ease-out hidden md:block"
-                style={getCursorStyles()}
-            ></div>
-
-            {renderIdleTooltip()}
-        </>
-    );
+          }}
+        >
+          {getPillText()}
+        </div>
+      </div>
+    </>
+  );
 }
 
 export default CustomCursor;

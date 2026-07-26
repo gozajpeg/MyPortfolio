@@ -1,23 +1,64 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
+/* ─── DESIGN TOKENS ─────────────────────────────────────────────────────── */
 @theme {
-  --font-sans: "Plus Jakarta Sans", sans-serif;
+  --font-sans: "Space Grotesk", sans-serif;
   --font-display: "Syne", sans-serif;
-  --font-mono: "Space Grotesk", sans-serif;
+  --font-mono: "Space Grotesk", monospace;
 
-  --color-neo-bg: #f4f0d6;
-  --color-neo-black: #050505;
-  --color-neo-lime: #a3e635;
-  --color-neo-cyan: #22d3ee;
-  --color-neo-orange: #ff6b00;
-  --color-neo-yellow: #fde047;
+  /* Dark monochrome palette -- shades of black */
+  --color-bg: #090909;
+  --color-surface: #141414;
+  --color-cap: #1A1A1A;
+  --color-cap-hover: #222222;
+  --color-ink: #EDEAE3;
+  --color-ink-soft: #A0A09A;
+  --color-ink-muted: #525250;
+  --color-white: #F0EDE6;
+  --color-border: #252525;
+  --color-border-dim: #1E1E1E;
+
+  /* Animations -- registering these here makes `animate-*` utilities available
+     everywhere, so no separate .content-reveal / .pulse-dot classes needed */
+  --animate-content-reveal: content-reveal 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-label-fade: label-fade 0.3s ease 0.05s both;
+  --animate-expand-in: expand-in 0.35s ease both;
+  --animate-ticker: ticker 22s linear infinite;
+  --animate-idle-pop: idle-pop 0.3s ease-out forwards;
+  --animate-pulse-dot: pulse-dot 2.2s ease-in-out infinite;
 }
 
-body {
-  margin: 0;
-  background-color: var(--color-neo-bg);
-  color: var(--color-neo-black);
-  font-family: var(--font-sans);
+@keyframes content-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes label-fade {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes expand-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes ticker {
@@ -28,149 +69,184 @@ body {
   100% {
     transform: translateX(-50%);
   }
-
-}
-
-.animate-ticker {
-  animation: ticker 20s linear infinite;
-}
-
-#root {
-  width: 100%;
-  min-height: 100vh;
-}
-
-@media (min-width: 768px) {
-  * {
-    cursor: none !important;
-  }
 }
 
 @keyframes idle-pop {
-  0% {
+  from {
     opacity: 0;
     transform: scale(0.8) translateY(4px);
   }
 
-  100% {
+  to {
     opacity: 1;
     transform: scale(1) translateY(0);
   }
 }
 
-.animate-idle-pop {
-  animation: idle-pop 0.3s ease-out forwards;
-}
+@keyframes pulse-dot {
 
-/* Scroll-behavior smooth for navigation links */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Remove default blue focus outline from all elements (like buttons and links) */
-*:focus {
-  outline: none !important;
-}
-
-/* Remove mobile tap blue highlight */
-* {
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* Prevent images from being highlighted or dragged */
-img {
-  user-select: none;
-  -webkit-user-drag: none;
-}
-
-/* Change text selection color from default blue to a sleek monochrome */
-::selection {
-  background: var(--color-neo-lime);
-  color: var(--color-neo-black);
-}
-
-::-moz-selection {
-  background: var(--color-neo-lime);
-  color: var(--color-neo-black);
-}
-
-/* Custom Neo-Brutalist Classes */
-.neo-border {
-  border: 4px solid var(--color-neo-black);
-}
-
-.neo-shadow {
-  box-shadow: 6px 6px 0px var(--color-neo-black);
-}
-
-.neo-shadow-lg {
-  box-shadow: 10px 10px 0px var(--color-neo-black);
-}
-
-.neo-shadow-sm {
-  box-shadow: 3px 3px 0px var(--color-neo-black);
-}
-
-.neo-interactive {
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.neo-interactive:hover {
-  transform: translate(-4px, -4px);
-  box-shadow: 10px 10px 0px var(--color-neo-black);
-}
-
-.neo-interactive-sm {
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.neo-interactive-sm:hover {
-  transform: translate(-2px, -2px);
-  box-shadow: 5px 5px 0px var(--color-neo-black);
-}
-
-/* Hide scrollbar for Chrome, Safari and Opera */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-/* Hide scrollbar for IE, Edge and Firefox */
-.no-scrollbar {
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
-  /* Firefox */
-}
-
-/* Smooth page transition animation */
-@keyframes pageFadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-
+  0%,
   100% {
     opacity: 1;
-    transform: translateY(0);
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.4;
+    transform: scale(0.75);
   }
 }
 
-.animate-page-in {
-  animation: pageFadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+/* ─── RESET & BASE ──────────────────────────────────────────────────────── */
+@layer base {
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    height: 100%;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    height: 100%;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  #root {
+    width: 100%;
+    height: 100dvh;
+  }
+
+  /* Custom cursor replaces the native one on non-touch/desktop widths */
+  @media (min-width: 768px) {
+    * {
+      cursor: none !important;
+    }
+  }
+
+  ::selection {
+    background: var(--color-ink);
+    color: var(--color-bg);
+  }
+
+  ::-moz-selection {
+    background: var(--color-ink);
+    color: var(--color-bg);
+  }
+
+  img {
+    user-select: none;
+    -webkit-user-drag: none;
+  }
+
+  *:focus {
+    outline: none !important;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
 }
 
-/* 3D Spin animation */
-@keyframes spin3d {
+/* ─── UTILITIES ─────────────────────────────────────────────────────────── */
+/* Tailwind v4 custom utilities -- usable as plain classes (no @apply hacks),
+   reserved for things real utility classes can't express: multi-layer inset
+   box-shadows, hover-state shadow recipes, and hidden-but-functional scroll. */
+
+@utility no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@utility bento-scroll {
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 3px;
+  }
+}
+
+@utility hairline {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* Keycap design:
+   - border-bottom = thick bottom ledge (key depth wall)
+   - inset top = subtle bevel highlight
+   - no translateY -- avoids overflow clipping bugs */
+@utility keycap {
+  background: var(--color-cap);
+  border: 1.5px solid var(--color-border);
+  border-bottom-width: 5px;
+  border-radius: 16px;
+  position: relative;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 0 -3px 8px rgba(0, 0, 0, 0.5),
+    0 2px 10px rgba(0, 0, 0, 0.5);
+  transition: border-bottom-width 0.14s ease, background 0.14s ease, box-shadow 0.14s ease;
+}
+
+/* Active = pressed in. No translateY -- stays in its box */
+@utility keycap-active {
+  background: var(--color-surface);
+  border-bottom-width: 2px;
+  box-shadow:
+    inset 0 3px 10px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* Queue inactive keycaps -- lighter dark on hover, never white */
+@utility keycap-queue {
+  cursor: pointer;
+  border-bottom-width: 5px;
+  transition: border-bottom-width 0.12s ease, background 0.15s ease, box-shadow 0.12s ease;
+
+  &:hover {
+    background: var(--color-cap-hover);
+    border-bottom-width: 2px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.07),
+      inset 0 -2px 6px rgba(0, 0, 0, 0.4),
+      0 2px 10px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* Loop Ticker Animation */
+@utility animate-ticker {
+  animation: ticker-slide 20s linear infinite;
+}
+
+@keyframes ticker-slide {
   0% {
-    transform: perspective(1000px) rotateY(0deg);
+    transform: translate3d(0, 0, 0);
   }
-
   100% {
-    transform: perspective(1000px) rotateY(360deg);
+    transform: translate3d(-50%, 0, 0);
   }
-}
-
-.animate-spin-3d {
-  animation: spin3d 4s linear infinite;
-  transform-style: preserve-3d;
 }

@@ -7,6 +7,8 @@ export default function FloatMessageBar() {
   const [status, setStatus] = useState('idle'); // idle | loading | success | error
   const inputRef = useRef(null);
 
+  const WORKER_URL = 'https://portfolio-telegram-bot.ragoza-builds.workers.dev';
+
   // Keyboard shortcut listener: Ctrl + E to toggle & Esc to close
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -45,16 +47,20 @@ export default function FloatMessageBar() {
         timestamp: new Date().toISOString(),
       });
 
-      const response = await fetch(`https://myportfolio.ragoza-builds.workers.dev/api/message?${params.toString()}`, {
+      const response = await fetch(`${WORKER_URL}?${params.toString()}`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json'
         }
       });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}`);
+      }
+
       const data = await response.json();
 
-      if (response.ok && data.success) {
+      if (data.success) {
         setStatus('success');
         setMessage('');
         setSenderInfo('');
@@ -121,8 +127,8 @@ export default function FloatMessageBar() {
                 type="submit"
                 disabled={status === 'loading' || !message.trim()}
                 className={`absolute inset-0 flex items-center justify-center font-mono text-[9px] font-bold uppercase tracking-wider transition-all duration-75 rounded-lg border border-[#252525] cursor-pointer disabled:opacity-50 disabled:pointer-events-none ${status === 'loading'
-                  ? 'text-ink-soft bg-[#222222] border-b-[2px]'
-                  : 'text-bg bg-[#EDEAE3] border-b-[3px] shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] hover:border-b-[2px] hover:translate-y-[1px] active:border-b-0 active:translate-y-[3px]'
+                    ? 'text-ink-soft bg-[#222222] border-b-[2px]'
+                    : 'text-bg bg-[#EDEAE3] border-b-[3px] shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] hover:border-b-[2px] hover:translate-y-[1px] active:border-b-0 active:translate-y-[3px]'
                   }`}
               >
                 {status === 'loading' ? '...' : 'Send'}

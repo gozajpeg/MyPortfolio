@@ -45,8 +45,10 @@ export default function FloatMessageBar() {
         timestamp: new Date().toISOString(),
       });
 
-      // Using mode: 'no-cors' for GET bypasses CORS headers check.
-      await fetch(`https://myportfolio.ragoza-builds.workers.dev/api/message?${params.toString()}`);
+      // Using mode: 'no-cors' for GET bypasses CORS headers check on external hosts.
+      await fetch(`https://myportfolio.ragoza-builds.workers.dev/api/message?${params.toString()}`, {
+        mode: 'no-cors'
+      });
 
       setStatus('success');
       setMessage('');

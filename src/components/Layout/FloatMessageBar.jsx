@@ -45,19 +45,27 @@ export default function FloatMessageBar() {
         timestamp: new Date().toISOString(),
       });
 
-      // Using mode: 'no-cors' for GET bypasses CORS headers check on external hosts.
-      await fetch(`https://myportfolio.ragoza-builds.workers.dev/api/message?${params.toString()}`, {
-        mode: 'no-cors'
+      const response = await fetch(`https://myportfolio.ragoza-builds.workers.dev/api/message?${params.toString()}`, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json'
+        }
       });
 
-      setStatus('success');
-      setMessage('');
-      setSenderInfo('');
-      setTimeout(() => setStatus('idle'), 3000);
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setStatus('success');
+        setMessage('');
+        setSenderInfo('');
+        setTimeout(() => setStatus('idle'), 3000);
+      } else {
+        throw new Error(data.error || data.telegramError || 'Failed to dispatch');
+      }
     } catch (err) {
-      console.error(err);
+      console.error('Telegram dispatch failed:', err);
       setStatus('error');
-      setTimeout(() => setStatus('idle'), 4000);
+      setTimeout(() => setStatus('idle'), 5000);
     }
   };
 

@@ -102,7 +102,7 @@ export default function FloatMessageBar() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
           <input
             type="text"
-            placeholder="Your Username / Email (optional)"
+            placeholder="Username / Email or stay Anonymous (optional)"
             value={senderInfo}
             onChange={(e) => setSenderInfo(e.target.value)}
             disabled={status === 'loading'}
@@ -142,12 +142,12 @@ export default function FloatMessageBar() {
           <div className="mt-2 text-center animate-in fade-in duration-150">
             {status === 'success' && (
               <span className="font-mono text-[8px] font-bold text-[#a3e635] uppercase tracking-wider">
-                ✓ Message dispatched to Telegram Bot!
+                ✓ Message sent successfully! Don't worry, only both of us will see it.
               </span>
             )}
             {status === 'error' && (
               <span className="font-mono text-[8px] font-bold text-[#FF3884] uppercase tracking-wider">
-                ⚠ Send error. Please verify worker route.
+                ⚠ Send error. Some errors eat your message.
               </span>
             )}
           </div>

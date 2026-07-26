@@ -38,7 +38,13 @@ function CustomCursor() {
         const textContent = hoverable.innerText || hoverable.textContent || '';
         const normalized = textContent.trim().toLowerCase();
 
-        if (titleAttr) {
+        if (normalized === '✕' || normalized === 'x' || normalized.includes('close') || normalized.includes('esc')) {
+          setHoverText('close');
+        } else if (normalized === '‹' || normalized.includes('prev') || normalized.includes('<') || normalized.includes('left')) {
+          setHoverText('previous');
+        } else if (normalized === '›' || normalized.includes('next') || normalized.includes('>') || normalized.includes('right')) {
+          setHoverText('next');
+        } else if (titleAttr) {
           setHoverText(titleAttr);
         } else if (ariaLabel) {
           setHoverText(ariaLabel);

@@ -88,18 +88,34 @@ function ExpandedContent({ project, imgIdx, setImgIdx, setLightbox, isMobile }) 
           </div>
         )}
 
-        {project.link && project.link !== 'Unreleased' && (
-          <div className="relative bg-[#141414] border border-[#252525] rounded-xl h-[42px] w-[130px] shadow-[0_2px_4px_rgba(0,0,0,0.5)] mt-1.5 shrink-0">
-            <a
-              href={project.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="absolute inset-0 flex items-center justify-center gap-1.5 font-mono text-[11px] font-bold text-bg bg-[#EDEAE3] border border-[#252525] border-b-[4px] rounded-xl shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] uppercase tracking-wider no-underline transition-all duration-75 hover:border-b-[2px] hover:translate-y-[2px] active:border-b-0 active:translate-y-[4px]"
-            >
-              View project ↗
-            </a>
-          </div>
-        )}
+        {/* CTA Actions (View Website / View Github) */}
+        <div className="flex gap-4 mt-2 shrink-0">
+          {project.website && (
+            <div className="relative bg-[#141414] border border-[#252525] rounded-xl h-[40px] w-[130px] shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
+              <a
+                href={project.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute inset-0 flex items-center justify-center gap-1.5 font-mono text-[10px] font-bold text-bg bg-[#EDEAE3] border border-[#252525] border-b-[4px] rounded-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] uppercase tracking-wider no-underline transition-all duration-75 hover:border-b-[2px] hover:translate-y-[2px] active:border-b-0 active:translate-y-[4px]"
+              >
+                View Website ↗
+              </a>
+            </div>
+          )}
+
+          {project.github && (
+            <div className="relative bg-[#141414] border border-[#252525] rounded-xl h-[40px] w-[130px] shadow-[0_1px_2px_rgba(0,0,0,0.5)]">
+              <a
+                href={project.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute inset-0 flex items-center justify-center gap-1.5 font-mono text-[10px] font-bold text-ink-soft bg-[#1A1A1A] border border-[#252525] border-b-[4px] rounded-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] uppercase tracking-wider no-underline transition-all duration-75 hover:bg-[#222222] hover:border-b-[2px] hover:translate-y-[2px] active:border-b-0 active:translate-y-[4px]"
+              >
+                View Github ↗
+              </a>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

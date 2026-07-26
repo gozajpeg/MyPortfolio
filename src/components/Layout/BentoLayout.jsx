@@ -1,16 +1,17 @@
-import { useState, useRef, useCallback } from 'react';
-import HeroBento from '../bento/HeroBento';
-import AboutBento from '../bento/AboutBento';
-import ProjectsBento from '../bento/ProjectsBento';
-import SkillsBento from '../bento/SkillsBento';
-import SocialsBento from '../bento/SocialsBento';
+import { useState, useRef, useCallback, lazy, Suspense } from 'react';
+
+const HeroBento = lazy(() => import('../bento/HeroBento'));
+const AboutBento = lazy(() => import('../bento/AboutBento'));
+const ProjectsBento = lazy(() => import('../bento/ProjectsBento'));
+const SkillsBento = lazy(() => import('../bento/SkillsBento'));
+const SocialsBento = lazy(() => import('../bento/SocialsBento'));
 
 const BENTO_META = {
-  hero: { id: 'hero', label: 'Home', index: '01', Component: HeroBento },
-  about: { id: 'about', label: 'About', index: '02', Component: AboutBento },
-  projects: { id: 'projects', label: 'Projects', index: '03', Component: ProjectsBento },
-  skills: { id: 'skills', label: 'Skills', index: '04', Component: SkillsBento },
-  socials: { id: 'socials', label: 'Connect', index: '05', Component: SocialsBento },
+  hero: { id: 'hero', label: 'Home', index: '01', Component: (props) => <Suspense><HeroBento {...props} /></Suspense> },
+  about: { id: 'about', label: 'About', index: '02', Component: (props) => <Suspense><AboutBento {...props} /></Suspense> },
+  projects: { id: 'projects', label: 'Projects', index: '03', Component: (props) => <Suspense><ProjectsBento {...props} /></Suspense> },
+  skills: { id: 'skills', label: 'Skills', index: '04', Component: (props) => <Suspense><SkillsBento {...props} /></Suspense> },
+  socials: { id: 'socials', label: 'Connect', index: '05', Component: (props) => <Suspense><SocialsBento {...props} /></Suspense> },
 };
 
 const INITIAL_QUEUE = ['hero', 'about', 'projects', 'skills', 'socials'];

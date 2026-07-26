@@ -11,18 +11,21 @@ export const screensaverData = {
       description: 'A customizable screensaver that allows users to create their own visual experience using a simple canvas interface.',
       tech: 'Python / Tkinter',
       image: ss1Img,
+      github: 'https://github.com/gozajpeg/Screensavers/releases/tag/v1.0.0',
     },
     {
       title: 'Environment Time/Day Sync ScreenSaver',
       description: 'A dynamic screensaver that automatically adapts its visual environment to match your actual local time of day.',
       tech: 'Python / Tkinter',
       image: ss2Img,
+      github: 'https://github.com/gozajpeg/Screensavers/releases/tag/v1.0.0',
     },
     {
       title: 'Bouncing Logo',
       description: 'Nostalgic "DVD Bouncing Animation" customizable with your own logo.',
       tech: 'Python / Tkinter',
       image: ss3Img,
+      github: 'https://github.com/gozajpeg/Screensavers/releases/tag/v1.0.0',
     }
   ]
 };

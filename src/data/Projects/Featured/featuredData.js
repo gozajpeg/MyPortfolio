@@ -15,6 +15,8 @@ export const featuredData = {
       summary: 'FrensLynk is a real-time social utility designed to bridge the gap between digital safety and physical connection. We’ve replaced the awkwardness of the cold approach with a high-speed, intent-driven framework.',
       image: frenslynkImg.FrensLynk01,
       images: [frenslynkImg.FrensLynk01, frenslynkImg.FrensLynk02, frenslynkImg.FrensLynk03],
+      website: 'https://frenslynk.vercel.app/',
+      github: 'https://github.com/gozajpeg/FrensLynk',
     },
     {
       title: 'Pollu.io',
@@ -24,6 +26,8 @@ export const featuredData = {
       summary: 'Pollu.io is a real-time spatial monitoring platform for air quality and pollution data. It empowers users to visualize and analyze environmental conditions, enabling informed decisions for healthier living.',
       image: polluImg.Pollu1,
       images: [polluImg.Pollu1, polluImg.Pollu2, polluImg.Pollu3],
+      website: 'https://pollu.io/',
+      github: 'https://github.com/gozajpeg/Pollu.io',
     },
     {
       title: 'Gradiator',
@@ -33,6 +37,8 @@ export const featuredData = {
       summary: 'Gradiator is a gradient generator and color palette tool designed for designers and developers. It allows users to create, customize, and export gradients and color palettes for use in web and graphic design projects.',
       image: gradiatorImg.Gradiator01,
       images: [gradiatorImg.Gradiator01, gradiatorImg.Gradiator02, gradiatorImg.Gradiator03],
+      website: 'https://gradiator.vercel.app/',
+      github: 'https://github.com/gozajpeg/Gradiator',
     },
     {
       title: 'Nganvas',
@@ -48,7 +54,7 @@ export const featuredData = {
       date: 'Est. July 2026',
       description: 'AudiTraze specialize in securing, storing and managing a tamper-proof audit logs in real-time.',
       languages: ['React', 'Tailwind', 'Node.js/Fastify', 'PostgreSQL'],
-      summary: 'AudiTraze is a platform where you can store and manage your audit-logs in real-time. It provides a secure and tamper-proof solutions for business and/or organizations to ensure the integrity and authenticity of their audit logs. AudiTraze can\'t be modifired or tampered data once it is stored, securing the records and audits in one place.',
+      summary: 'AudiTraze is a platform where you can store and manage your audit-logs in real-time. It provides a secure and tamper-proof solutions for business and/or organizations to ensure the integrity and authenticity of their audit logs. AudiTraze can\'t be modified or tampered data once it is stored, securing the records and audits in one place.',
       image: auditrazeImg.AudiTraze01,
       images: [auditrazeImg.AudiTraze01, auditrazeImg.AudiTraze02, auditrazeImg.AudiTraze03],
     },
@@ -60,6 +66,7 @@ export const featuredData = {
       summary: 'Cerium is a bot testing platform that allows users to test, detects, and guide to fix bugs and errors in their websites in real-time. Cerium uses Bring Your Own Key (BYOK) concept to ensure that the users have full control over their data and privacy.',
       image: ceriumImg.Cerium01,
       images: [ceriumImg.Cerium01, ceriumImg.Cerium02, ceriumImg.Cerium03],
+      website: 'https://cerium.vercel.app/',
     },
     /*{
       title: 'Coming Soon',

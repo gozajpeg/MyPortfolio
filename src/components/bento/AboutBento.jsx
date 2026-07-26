@@ -34,9 +34,11 @@ function AboutDesktop() {
           <p className="font-sans text-sm sm:text-base md:text-lg font-normal text-ink-soft leading-relaxed m-0">
             Self-taught developer based in the Philippines. Loves coding secure, structured,
             and high-performance applications across the full stack.
-          </p>
-          <p className="font-sans text-xs sm:text-sm font-normal text-ink-muted leading-relaxed m-0">
-            Takes full ownership independently and collaborates smoothly within teams. Constantly exploring new patterns, technologies, and security practices.
+            I prioritize security, scalability, user experience, performance, and reliability in every project I work on.
+            I am a quick learner with good problem-solving skills. I take full ownership of my work and can collaborate with teams to deliver the best results.
+            I also continously learning new technologies and patterns to improve my skills and deliver quality expectations.
+            I'm passionate about building products that solves real-world problems and make a positive impact on people's lives.
+            I'm always open to new challenges and opportunities to grow as a developer.
           </p>
         </div>
       </div>
@@ -44,11 +46,11 @@ function AboutDesktop() {
       {/* RIGHT COLUMN (2nd Layout Pane): Services & Responsibilities */}
       <div className="flex flex-col gap-6 border-l border-white/5 pl-8 sm:pl-10 md:pl-12 lg:pl-14 overflow-hidden">
         {/* Core Responsibilities */}
-        <div className="flex flex-col gap-4 overflow-hidden shrink-0">
+        <div className="flex flex-col gap-3 overflow-hidden min-h-0 flex-1">
           <span className="font-mono text-[9px] font-bold text-ink-muted uppercase tracking-widest shrink-0">
             Core Responsibilities
           </span>
-          <div className="flex flex-col gap-3 py-1">
+          <div className="flex-1 flex flex-col gap-3 overflow-y-auto no-scrollbar py-1">
             {capabilities.map((cap, idx) => (
               <div key={cap.num} className="flex flex-col gap-1 shrink-0">
                 <div className="flex items-center gap-2.5">
@@ -71,9 +73,9 @@ function AboutDesktop() {
         <div className="w-full h-px bg-white/5 shrink-0" />
 
         {/* Services & CV Action Column */}
-        <div className="flex-1 flex flex-col justify-between min-h-0">
-          <div className="shrink-0 mb-4">
-            <span className="font-mono text-[9px] font-bold text-ink-muted uppercase tracking-widest shrink-0 block mb-2.5">
+        <div className="flex flex-col gap-4 shrink-0 justify-end">
+          <div className="shrink-0">
+            <span className="font-mono text-[9px] font-bold text-ink-muted uppercase tracking-widest shrink-0 block mb-2">
               Services
             </span>
             <div className="grid grid-cols-3 gap-x-4 gap-y-2">
@@ -94,7 +96,7 @@ function AboutDesktop() {
 /* ── MOBILE ────────────────────────────────────────────────── */
 function AboutMobile() {
   return (
-    <div className="h-full w-full overflow-hidden flex flex-col p-5 gap-5">
+    <div className="h-full w-full overflow-y-auto no-scrollbar flex flex-col p-5 gap-5 pb-8">
       {/* Bio section */}
       <div className="flex flex-col gap-2 shrink-0">
         <span className="font-mono text-[9px] font-bold text-ink-muted uppercase tracking-widest">
@@ -102,6 +104,11 @@ function AboutMobile() {
         </span>
         <p className="font-sans text-sm font-normal text-ink-soft leading-relaxed m-0">
           Self-taught developer from the Philippines. Builds secure, structured, high-performance applications across the full stack.
+          I prioritize security, scalability, user experience, performance, and reliability in every project I work on.
+          I am a quick learner with good problem-solving skills. I take full ownership of my work and can collaborate with teams to deliver the best results.
+          I also continously learning new technologies and patterns to improve my skills and deliver quality expectations.
+          I'm passionate about building products that solves real-world problems and make a positive impact on people's lives.
+          I'm always open to new challenges and opportunities to grow as a developer.
         </p>
       </div>
 
@@ -123,7 +130,7 @@ function AboutMobile() {
       <div className="w-full h-px bg-white/5 shrink-0" />
 
       {/* Capabilities list */}
-      <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar flex flex-col gap-4">
+      <div className="flex flex-col gap-4">
         <p className="font-mono text-[9px] font-bold text-ink-muted uppercase tracking-widest m-0 shrink-0">
           Core Responsibilities
         </p>

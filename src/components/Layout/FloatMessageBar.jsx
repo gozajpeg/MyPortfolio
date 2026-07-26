@@ -7,7 +7,7 @@ export default function FloatMessageBar() {
   const [status, setStatus] = useState('idle'); // idle | loading | success | error
   const inputRef = useRef(null);
 
-  const WORKER_URL = 'https://portfolio-telegram-bot.ragoza-builds.workers.dev';
+  const WORKER_URL = 'https://messages.ragoza-builds.workers.dev';
 
   // Keyboard shortcut listener: Ctrl + E to toggle & Esc to close
   useEffect(() => {
@@ -127,8 +127,8 @@ export default function FloatMessageBar() {
                 type="submit"
                 disabled={status === 'loading' || !message.trim()}
                 className={`absolute inset-0 flex items-center justify-center font-mono text-[9px] font-bold uppercase tracking-wider transition-all duration-75 rounded-lg border border-[#252525] cursor-pointer disabled:opacity-50 disabled:pointer-events-none ${status === 'loading'
-                    ? 'text-ink-soft bg-[#222222] border-b-[2px]'
-                    : 'text-bg bg-[#EDEAE3] border-b-[3px] shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] hover:border-b-[2px] hover:translate-y-[1px] active:border-b-0 active:translate-y-[3px]'
+                  ? 'text-ink-soft bg-[#222222] border-b-[2px]'
+                  : 'text-bg bg-[#EDEAE3] border-b-[3px] shadow-[inset_0_1px_0_rgba(255,255,255,0.4)] hover:border-b-[2px] hover:translate-y-[1px] active:border-b-0 active:translate-y-[3px]'
                   }`}
               >
                 {status === 'loading' ? '...' : 'Send'}

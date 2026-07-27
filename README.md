@@ -7,8 +7,8 @@ Personal portfolio site for **Rommel Angelo Goza**, a self-taught full-stack dev
 ## Features
 
 - **Bento-style navigation** — Home, About, Projects, Skills, and Connect live as swappable panels rather than stacked page sections. Clicking a queue item brings it to the front with a smooth FLIP (First-Last-Invert-Play) transition.
-- **No-scroll layout** — every panel is designed to fit to your screen vs normal scrolling websites.
-- **Custom cursor** — a custom cursor was inspired in Figma code editor.
+- **No-scroll layout** — Every panel is designed to fit to your screen vs normal scrolling websites.
+- **Custom cursor** — The Figma code editor-inspired custom cursor.
 - **Responsive layout** — Responsive to any layout you have. (e.g mobile, dekstop)
 - **Dark, monochrome, keycap-inspired design system** — Custom monochrome design and keycap-inspiired layout.
 

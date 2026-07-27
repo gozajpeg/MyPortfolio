@@ -1,18 +1,72 @@
-# React + Vite
+# MyPortfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Personal portfolio site for **Rommel Angelo Goza**, a self-taught full-stack developer from the Philippines. Build a single-page "bento" layout portfolio, one large active panel plus a queue strip of the other sections, swapped with a FLIP-animated transition instead of a traditional scrolling page.
 
-Currently, two official plugins are available:
+**Live site:** https://gozajpeg.github.io/MyPortfolio/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Features
 
-## React Compiler
+- **Bento-style navigation** — Home, About, Projects, Skills, and Connect live as swappable panels rather than stacked page sections. Clicking a queue item brings it to the front with a smooth FLIP (First-Last-Invert-Play) transition.
+- **No-scroll layout** — every panel is designed to fit to your screen vs normal scrolling websites.
+- **Custom cursor** — a custom cursor was inspired in Figma code editor.
+- **Responsive layout** — Responsive to any layout you have. (e.g mobile, dekstop)
+- **Dark, monochrome, keycap-inspired design system** — Custom monochrome design and keycap-inspiired layout.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+## Tech stack
 
-Note: This will impact Vite dev & build performances.
+| | |
+|---|---|
+| Framework | React |
+| Build tool | Vite |
+| Styling | Tailwind CSS |
+| Routing | React Router |
+| Icons | lucide-react |
+| Deployment | GitHub Pages via `gh-pages` |
 
-## Expanding the ESLint configuration
+## Getting started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+# clone the repo
+git clone https://github.com/gozajpeg/MyPortfolio.git
+cd MyPortfolio
+
+# install dependencies
+npm install
+
+# start the dev server
+npm run dev
+```
+
+## Scripts
+
+| Command | Description |
+|---|---|
+| `npm run dev` | Start the local dev server with hot module reload |
+| `npm run build` | Build the production bundle to `dist/` |
+| `npm run preview` | Preview the production build locally |
+| `npm run deploy` | Build and publish `dist/` to GitHub Pages |
+
+## Project structure
+
+```
+src/
+├── assets/              # images, logos
+├── components/
+│   ├── bento/           # HeroBento, AboutBento, ProjectsBento, SkillsBento, SocialsBento
+│   └── Layout/           # BentoLayout (panel switching + FLIP animation), Cursor
+├── data/
+│   └── Projects/         # Featured, Screensavers, Logos, and NPM project data
+├── hooks/                # useIsMobile
+├── App.jsx
+├── main.jsx
+└── index.css             # Tailwind v4 theme tokens, keyframes, and custom utilities
+```
+
+## Contact
+
+- GitHub: [@gozajpeg](https://github.com/gozajpeg)
+- Email: ragoza.builds@gmail.com
+
+## License
+
+This project is a personal portfolio and is not currently licensed for reuse.

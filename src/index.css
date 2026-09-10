@@ -1,43 +1,44 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
 /* ─── DESIGN TOKENS ─────────────────────────────────────────────────────── */
 @theme {
   --font-sans: "Space Grotesk", sans-serif;
   --font-display: "Syne", sans-serif;
-  --font-mono: "Space Grotesk", monospace;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-square: "Orbitron", ui-monospace, monospace, sans-serif;
 
-  /* Dark monochrome palette -- shades of black */
+  /* Dark monochrome palette */
   --color-bg: #090909;
   --color-surface: #141414;
+  --color-surface-subtle: #181818;
   --color-cap: #1A1A1A;
   --color-cap-hover: #222222;
   --color-ink: #EDEAE3;
   --color-ink-soft: #A0A09A;
-  --color-ink-muted: #525250;
+  --color-ink-muted: #585856;
   --color-white: #F0EDE6;
   --color-border: #252525;
   --color-border-dim: #1E1E1E;
 
-  /* Animations -- registering these here makes `animate-*` utilities available
-     everywhere, so no separate .content-reveal / .pulse-dot classes needed */
-  --animate-content-reveal: content-reveal 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
-  --animate-label-fade: label-fade 0.3s ease 0.05s both;
-  --animate-expand-in: expand-in 0.35s ease both;
+  /* Spacing system */
+  --spacing-card-p: clamp(1.25rem, 2.5vw, 2.5rem);
+  --spacing-card-gap: clamp(1rem, 2vw, 2rem);
+
+  /* Animations */
+  --animate-card-enter: card-enter 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-label-fade: label-fade 0.25s ease 0.05s both;
   --animate-ticker: ticker 22s linear infinite;
-  --animate-idle-pop: idle-pop 0.3s ease-out forwards;
   --animate-pulse-dot: pulse-dot 2.2s ease-in-out infinite;
 }
 
-@keyframes content-reveal {
+@keyframes card-enter {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: scale(0.988) translateY(6px);
   }
-
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: scale(1) translateY(0);
   }
 }
 
@@ -45,17 +46,6 @@
   from {
     opacity: 0;
   }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes expand-in {
-  from {
-    opacity: 0;
-  }
-
   to {
     opacity: 1;
   }
@@ -65,32 +55,16 @@
   0% {
     transform: translateX(0);
   }
-
   100% {
     transform: translateX(-50%);
   }
 }
-
-@keyframes idle-pop {
-  from {
-    opacity: 0;
-    transform: scale(0.8) translateY(4px);
-  }
-
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
 @keyframes pulse-dot {
-
   0%,
   100% {
     opacity: 1;
     transform: scale(1);
   }
-
   50% {
     opacity: 0.4;
     transform: scale(0.75);
@@ -99,7 +73,6 @@
 
 /* ─── RESET & BASE ──────────────────────────────────────────────────────── */
 @layer base {
-
   *,
   *::before,
   *::after {
@@ -111,6 +84,7 @@
   html {
     scroll-behavior: smooth;
     height: 100%;
+    height: var(--app-height, 100svh);
   }
 
   body {
@@ -118,6 +92,7 @@
     color: var(--color-ink);
     font-family: var(--font-sans);
     height: 100%;
+    height: var(--app-height, 100svh);
     overflow: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -125,22 +100,20 @@
 
   #root {
     width: 100%;
-    height: 100dvh;
+    height: 100%;
+    height: var(--app-height, 100svh);
+    max-height: var(--app-height, 100svh);
+    overflow: hidden;
   }
 
-  /* Custom cursor replaces the native one on non-touch/desktop widths */
-  @media (min-width: 768px) {
+  /* Only hide native cursor on devices with true mouse pointer support */
+  @media (hover: hover) and (pointer: fine) {
     * {
       cursor: none !important;
     }
   }
 
   ::selection {
-    background: var(--color-ink);
-    color: var(--color-bg);
-  }
-
-  ::-moz-selection {
     background: var(--color-ink);
     color: var(--color-bg);
   }
@@ -160,14 +133,9 @@
 }
 
 /* ─── UTILITIES ─────────────────────────────────────────────────────────── */
-/* Tailwind v4 custom utilities -- usable as plain classes (no @apply hacks),
-   reserved for things real utility classes can't express: multi-layer inset
-   box-shadows, hover-state shadow recipes, and hidden-but-functional scroll. */
-
 @utility no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
-
   &::-webkit-scrollbar {
     display: none;
   }
@@ -195,24 +163,58 @@
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-/* Keycap design:
-   - border-bottom = thick bottom ledge (key depth wall)
-   - inset top = subtle bevel highlight
-   - no translateY -- avoids overflow clipping bugs */
+@utility bento-container-mobile {
+  padding-bottom: var(--bento-bottom-padding, max(5rem, calc(env(safe-area-inset-bottom, 0px) + 4.5rem)));
+
+  @media (min-width: 640px) {
+    padding-bottom: 0.625rem;
+  }
+}
+
+.is-ios .bento-container-mobile {
+  padding-bottom: max(7.5rem, calc(env(safe-area-inset-bottom, 0px) + 6rem));
+
+  @media (min-width: 640px) {
+    padding-bottom: 0.625rem;
+  }
+}
+
+@supports (-webkit-touch-callout: none) {
+  .bento-container-mobile {
+    padding-bottom: max(7.5rem, calc(env(safe-area-inset-bottom, 0px) + 6rem));
+
+    @media (min-width: 640px) {
+      padding-bottom: 0.625rem;
+    }
+  }
+}
+
+/* Keycap tactile design:
+   - border-bottom creates physical depth wall
+   - inset highlight gives tactile bevel edge */
 @utility keycap {
   background: var(--color-cap);
   border: 1.5px solid var(--color-border);
-  border-bottom-width: 5px;
-  border-radius: 16px;
+  border-bottom-width: 3.5px;
+  border-radius: 12px;
   position: relative;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    inset 0 -3px 8px rgba(0, 0, 0, 0.5),
-    0 2px 10px rgba(0, 0, 0, 0.5);
+    inset 0 -2px 6px rgba(0, 0, 0, 0.5),
+    0 2px 8px rgba(0, 0, 0, 0.5);
   transition: border-bottom-width 0.14s ease, background 0.14s ease, box-shadow 0.14s ease;
+
+  @media (min-width: 640px) {
+    border-bottom-width: 5px;
+    border-radius: 16px;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.05),
+      inset 0 -3px 8px rgba(0, 0, 0, 0.5),
+      0 2px 10px rgba(0, 0, 0, 0.5);
+  }
 }
 
-/* Active = pressed in. No translateY -- stays in its box */
+/* Active keycap = pressed state */
 @utility keycap-active {
   background: var(--color-surface);
   border-bottom-width: 2px;
@@ -221,11 +223,15 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
-/* Queue inactive keycaps -- lighter dark on hover, never white */
+/* Queue inactive keycaps */
 @utility keycap-queue {
   cursor: pointer;
-  border-bottom-width: 5px;
+  border-bottom-width: 3.5px;
   transition: border-bottom-width 0.12s ease, background 0.15s ease, box-shadow 0.12s ease;
+
+  @media (min-width: 640px) {
+    border-bottom-width: 5px;
+  }
 
   &:hover {
     background: var(--color-cap-hover);
@@ -237,16 +243,17 @@
   }
 }
 
-/* Loop Ticker Animation */
-@utility animate-ticker {
-  animation: ticker-slide 20s linear infinite;
+/* Smooth Accordion CSS Grid Rows */
+@utility accordion-row-closed {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+  opacity: 0;
 }
 
-@keyframes ticker-slide {
-  0% {
-    transform: translate3d(0, 0, 0);
-  }
-  100% {
-    transform: translate3d(-50%, 0, 0);
-  }
+@utility accordion-row-open {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
+  opacity: 1;
 }

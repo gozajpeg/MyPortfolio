@@ -17,4 +17,7 @@ export default defineConfig({
   optimizeDeps: {
     include: ['react', 'react-dom', 'framer-motion'],
   },
+  build: {
+    chunkSizeWarningLimit: 1000,
+  },
 })

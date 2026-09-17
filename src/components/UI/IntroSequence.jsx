@@ -90,6 +90,7 @@ export default function IntroSequence({ onComplete }) {
     const duration = 5000; // Exactly 5 seconds
     let startTime = null;
     let rafId;
+    let delayTimeout = null;
 
     const render = (now) => {
       if (!startTime) startTime = now;
@@ -133,14 +134,25 @@ export default function IntroSequence({ onComplete }) {
       if (progress < 1) {
         rafId = requestAnimationFrame(render);
       } else {
-        setDisplayNumber(101);
-        // Last square at bottom-right has turned black: advance to heading
-        setPhase('heading');
+        // Explicitly hit 100 and clear the canvas to black
+        setDisplayNumber(100);
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, width, height);
+
+        // Delay 1 second at 100 before transitioning to intro heading
+        delayTimeout = setTimeout(() => {
+          setPhase('heading');
+        }, 1000);
       }
     };
 
     rafId = requestAnimationFrame(render);
-    return () => cancelAnimationFrame(rafId);
+    return () => {
+      cancelAnimationFrame(rafId);
+      if (delayTimeout) {
+        clearTimeout(delayTimeout);
+      }
+    };
   }, [hasSeen, phase]);
 
   if (hasSeen || phase === 'complete') return null;

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useIsMobile } from '../../hooks/useIsMobile';
 import { hasUserSentMessage, recordMessageSent, getDeviceFingerprint } from '../../utils/antiSpam';
 
-/* ── OFFICIAL BRAND VECTOR ICONS (Zero Network Delay, Pure SVG) ── */
+/* ── OFFICIAL BRAND VECTOR ICONS ── */
 function GitHubIcon({ className }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden="true">
@@ -41,9 +41,7 @@ const SOCIALS = [
     handle: '@gozajpeg',
     url: 'https://github.com/gozajpeg',
     component: GitHubIcon,
-    desktopPos: 'top-[10%] left-[5%] lg:top-[12%] lg:left-[8%] xl:left-[11%]',
-    animClass: 'animate-float-github',
-    mobileAnimClass: 'animate-float-mobile-1',
+    desktopPos: 'top-[12%] left-[8%] lg:left-[10%]',
     hoverEffect: 'hover:text-white hover:drop-shadow-[0_0_32px_rgba(255,255,255,0.8)]',
   },
   {
@@ -51,9 +49,7 @@ const SOCIALS = [
     handle: 'Rommel Angelo Goza',
     url: 'https://www.linkedin.com/in/rommel-angelo-goza-264a72421/',
     component: LinkedInIcon,
-    desktopPos: 'top-[10%] right-[5%] lg:top-[12%] lg:right-[8%] xl:right-[11%]',
-    animClass: 'animate-float-linkedin',
-    mobileAnimClass: 'animate-float-mobile-2',
+    desktopPos: 'top-[12%] right-[8%] lg:right-[10%]',
     hoverEffect: 'hover:text-[#0A66C2] hover:drop-shadow-[0_0_36px_rgba(10,102,194,0.85)]',
   },
   {
@@ -61,9 +57,7 @@ const SOCIALS = [
     handle: 'ragoza.builds@gmail.com',
     url: 'mailto:ragoza.builds@gmail.com',
     component: EmailIcon,
-    desktopPos: 'bottom-[12%] left-[6%] lg:bottom-[14%] lg:left-[9%] xl:left-[12%]',
-    animClass: 'animate-float-email',
-    mobileAnimClass: 'animate-float-mobile-3',
+    desktopPos: 'bottom-[14%] left-[9%] lg:left-[11%]',
     hoverEffect: 'hover:text-[#EA4335] hover:drop-shadow-[0_0_36px_rgba(234,67,53,0.85)]',
   },
   {
@@ -71,14 +65,12 @@ const SOCIALS = [
     handle: '@jelonaticz',
     url: 'https://www.instagram.com/jelonaticz',
     component: InstagramIcon,
-    desktopPos: 'bottom-[12%] right-[6%] lg:bottom-[14%] lg:right-[9%] xl:right-[12%]',
-    animClass: 'animate-float-instagram',
-    mobileAnimClass: 'animate-float-mobile-4',
+    desktopPos: 'bottom-[14%] right-[9%] lg:right-[11%]',
     hoverEffect: 'hover:text-[#E1306C] hover:drop-shadow-[0_0_36px_rgba(225,48,108,0.85)]',
   },
 ];
 
-/* ── IN-PLACE CONTACT & HEADING PANE ───────────────────────── */
+/* ── IN-PLACE CONTACT & HEADING PANE ── */
 function CenterContactPane({ isMobile }) {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [sender, setSender] = useState('');
@@ -175,14 +167,14 @@ function CenterContactPane({ isMobile }) {
   };
 
   return (
-    <div className="relative z-10 flex flex-col items-center text-center gap-3 sm:gap-4 max-w-xl mx-auto pointer-events-auto px-4 w-full transition-all duration-300">
+    <div className="relative z-10 flex flex-col items-center text-center gap-3 sm:gap-4 max-w-xl mx-auto pointer-events-auto px-4 w-full">
       {/* ── MODE 1: In-Place Message Form ── */}
       {isFormOpen ? (
-        <div className="w-full max-w-md sm:max-w-lg flex flex-col items-center gap-3 animate-card-enter">
-          {/* Top Bar: Form Tag & "Back to info" toggle (Changeable too) */}
+        <div className="w-full max-w-md sm:max-w-lg flex flex-col items-center gap-3">
+          {/* Top Bar: Form Tag & "Back to info" toggle */}
           <div className="flex items-center justify-between w-full px-1">
             <span className="font-sans text-xs font-semibold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
               Direct Message
             </span>
             <button
@@ -238,7 +230,7 @@ function CenterContactPane({ isMobile }) {
               />
             </div>
 
-            {/* Action Keycap Button: EXACT SAME SIZE */}
+            {/* Action Keycap Button */}
             <div className="flex flex-col items-center gap-1.5 pt-1 w-full">
               <div className="relative bg-[#141414] border border-[#252525] rounded-xl h-[46px] w-[170px] sm:w-[185px] shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
                 <button
@@ -265,7 +257,7 @@ function CenterContactPane({ isMobile }) {
                 </button>
               </div>
 
-              {/* Status and Anti-Spam Notification */}
+              {/* Status Notification */}
               <span className="font-sans text-[11px] sm:text-xs text-ink-muted min-h-[18px]">
                 {status === 'success' ? (
                   <span className="text-emerald-400 font-semibold">
@@ -288,7 +280,7 @@ function CenterContactPane({ isMobile }) {
         </div>
       ) : (
         /* ── MODE 2: Standard Editorial Heading View ── */
-        <div className="flex flex-col items-center gap-2.5 sm:gap-4.5 animate-card-enter">
+        <div className="flex flex-col items-center gap-2.5 sm:gap-4.5">
           <span className="font-sans text-[11px] sm:text-xs font-semibold text-ink-muted uppercase tracking-wider">
             Get in Touch
           </span>
@@ -302,7 +294,7 @@ function CenterContactPane({ isMobile }) {
             Open to contract work, full-time engineering opportunities, and technical projects.
           </p>
 
-          {/* Action Keycap Button: EXACT SAME SIZE */}
+          {/* Action Keycap Button */}
           <div className="flex flex-col items-center gap-2 pt-1">
             <div className="relative bg-[#141414] border border-[#252525] rounded-xl h-[46px] w-[170px] sm:w-[185px] shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
               <button
@@ -320,7 +312,7 @@ function CenterContactPane({ isMobile }) {
                 {!hasSent && <span className="text-xs">↗</span>}
               </button>
             </div>
-            <span className="font-sans text-xs text-ink-muted flex items-center gap-1.5">
+            <span className="font-sans text-xs text-ink-muted">
               {hasSent
                 ? '1 message per visitor limit reached • Connected'
                 : 'Instant dispatch directly to Telegram'}
@@ -332,64 +324,20 @@ function CenterContactPane({ isMobile }) {
   );
 }
 
-/* ── DESKTOP: Centered Headings + Big Floating Social Icons (NO Containers) ─── */
+/* ── DESKTOP: Centered Headings + Stable Floating Social Icons ─── */
 function SocialsDesktop() {
   return (
     <div className="relative h-full w-full overflow-hidden flex items-center justify-center p-6 sm:p-8 lg:p-12 select-none isolate">
-      {/* Off-Main-Thread Hardware Accelerated Floating Keyframes */}
-      <style>{`
-        @keyframes float-drift-1 {
-          0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
-          25% { transform: translate3d(22px, -24px, 0) rotate(5deg); }
-          50% { transform: translate3d(-18px, 16px, 0) rotate(-4deg); }
-          75% { transform: translate3d(18px, -18px, 0) rotate(3deg); }
-        }
-        @keyframes float-drift-2 {
-          0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
-          25% { transform: translate3d(-22px, 22px, 0) rotate(-5deg); }
-          50% { transform: translate3d(16px, -16px, 0) rotate(4deg); }
-          75% { transform: translate3d(-18px, 18px, 0) rotate(-3deg); }
-        }
-        @keyframes float-drift-3 {
-          0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
-          25% { transform: translate3d(20px, 22px, 0) rotate(4deg); }
-          50% { transform: translate3d(-18px, -18px, 0) rotate(-5deg); }
-          75% { transform: translate3d(16px, 20px, 0) rotate(3deg); }
-        }
-        @keyframes float-drift-4 {
-          0%, 100% { transform: translate3d(0, 0, 0) rotate(0deg); }
-          25% { transform: translate3d(-22px, -22px, 0) rotate(-4deg); }
-          50% { transform: translate3d(18px, 16px, 0) rotate(5deg); }
-          75% { transform: translate3d(-16px, -18px, 0) rotate(-3deg); }
-        }
-        .animate-float-github {
-          animation: float-drift-1 9.4s ease-in-out infinite;
-          will-change: transform;
-        }
-        .animate-float-linkedin {
-          animation: float-drift-2 10.6s ease-in-out infinite;
-          will-change: transform;
-        }
-        .animate-float-email {
-          animation: float-drift-3 11.2s ease-in-out infinite;
-          will-change: transform;
-        }
-        .animate-float-instagram {
-          animation: float-drift-4 9.8s ease-in-out infinite;
-          will-change: transform;
-        }
-      `}</style>
-
       {/* Ambient background soft glow */}
       <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.035)_0%,transparent_70%)]" />
 
-      {/* Big Floating Social Icons - NO Containers, Pure Floating Brand Glyphs */}
+      {/* Social Icons - Anchored cleanly without float jump during transitions */}
       {SOCIALS.map((social) => {
         const IconComponent = social.component;
         return (
           <div
             key={social.name}
-            className={`absolute z-10 ${social.desktopPos} ${social.animClass} pointer-events-auto`}
+            className={`absolute z-10 ${social.desktopPos} pointer-events-auto`}
           >
             <a
               href={social.url}
@@ -397,10 +345,10 @@ function SocialsDesktop() {
               rel="noopener noreferrer"
               title={`${social.name} • ${social.handle}`}
               aria-label={social.name}
-              className={`block text-[#EDEAE3]/80 hover:text-[#EDEAE3] transition-all duration-300 ease-out cursor-pointer select-none hover:scale-125 active:scale-95 drop-shadow-[0_12px_28px_rgba(0,0,0,0.85)] ${social.hoverEffect}`}
+              className={`block text-[#EDEAE3]/80 hover:text-[#EDEAE3] transition-all duration-200 ease-out cursor-pointer select-none hover:scale-115 active:scale-95 drop-shadow-[0_12px_28px_rgba(0,0,0,0.85)] ${social.hoverEffect}`}
             >
-              <div className="w-18 h-18 sm:w-22 sm:h-22 lg:w-26 lg:h-26 xl:w-28 xl:h-28 flex items-center justify-center p-1">
-                <IconComponent className="w-full h-full object-contain transition-transform duration-300" />
+              <div className="w-18 h-18 sm:w-22 sm:h-22 lg:w-24 lg:h-24 xl:w-26 xl:h-26 flex items-center justify-center p-1">
+                <IconComponent className="w-full h-full object-contain" />
               </div>
             </a>
           </div>
@@ -420,38 +368,12 @@ function SocialsMobile() {
 
   return (
     <div className="h-full w-full overflow-y-auto no-scrollbar flex flex-col items-center justify-between p-4 sm:p-6 gap-3 sm:gap-4 text-center select-none isolate">
-      <style>{`
-        @keyframes float-mob-1 {
-          0%, 100% { transform: translate3d(0, 0, 0); }
-          50% { transform: translate3d(6px, -6px, 0); }
-        }
-        @keyframes float-mob-2 {
-          0%, 100% { transform: translate3d(0, 0, 0); }
-          50% { transform: translate3d(-6px, 6px, 0); }
-        }
-        @keyframes float-mob-3 {
-          0%, 100% { transform: translate3d(0, 0, 0); }
-          50% { transform: translate3d(6px, 6px, 0); }
-        }
-        @keyframes float-mob-4 {
-          0%, 100% { transform: translate3d(0, 0, 0); }
-          50% { transform: translate3d(-6px, -6px, 0); }
-        }
-        .animate-float-mobile-1 { animation: float-mob-1 5.5s ease-in-out infinite; will-change: transform; }
-        .animate-float-mobile-2 { animation: float-mob-2 6.0s ease-in-out infinite; will-change: transform; }
-        .animate-float-mobile-3 { animation: float-mob-3 6.4s ease-in-out infinite; will-change: transform; }
-        .animate-float-mobile-4 { animation: float-mob-4 5.8s ease-in-out infinite; will-change: transform; }
-      `}</style>
-
-      {/* 1. TOP ROW: 2 BIG FLOATING ICONS (GitHub & LinkedIn) - NO Containers */}
+      {/* 1. TOP ROW: 2 ICONS (GitHub & LinkedIn) */}
       <div className="w-full max-w-xs flex items-center justify-around pt-2 shrink-0">
         {topSocials.map((social) => {
           const IconComponent = social.component;
           return (
-            <div
-              key={social.name}
-              className={`${social.mobileAnimClass} flex items-center justify-center`}
-            >
+            <div key={social.name} className="flex items-center justify-center">
               <a
                 href={social.url}
                 target="_blank"
@@ -469,20 +391,17 @@ function SocialsMobile() {
         })}
       </div>
 
-      {/* 2. CENTER SECTION: Vertically Centered Headings & Changeable Direct Message */}
+      {/* 2. CENTER SECTION: Vertically Centered Headings */}
       <div className="w-full my-auto py-2 flex items-center justify-center flex-1">
         <CenterContactPane isMobile={true} />
       </div>
 
-      {/* 3. BOTTOM ROW: 2 BIG FLOATING ICONS (Email & Instagram) - NO Containers */}
+      {/* 3. BOTTOM ROW: 2 ICONS (Email & Instagram) */}
       <div className="w-full max-w-xs flex items-center justify-around pb-2 shrink-0">
         {bottomSocials.map((social) => {
           const IconComponent = social.component;
           return (
-            <div
-              key={social.name}
-              className={`${social.mobileAnimClass} flex items-center justify-center`}
-            >
+            <div key={social.name} className="flex items-center justify-center">
               <a
                 href={social.url}
                 target="_blank"
@@ -503,7 +422,7 @@ function SocialsMobile() {
   );
 }
 
-export default function SocialsBento() {
+export default function SocialsBento({ isActive = true, onNavigate }) {
   const isMobile = useIsMobile(768);
   return isMobile ? <SocialsMobile /> : <SocialsDesktop />;
 }

@@ -1,308 +1,159 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useIsMobile } from '../../hooks/useIsMobile';
-import DriftWall from '../UI/DriftWall';
-import { featuredData } from '../../data/Projects/Featured/featuredData';
-import { screensaverData } from '../../data/Projects/Others/screensaverData';
-import { logoData } from '../../data/Projects/Others/logoData';
-import { npmData } from '../../data/Projects/Others/npmData';
+import { useState } from 'react';
+import { projectsData } from '../../data/Projects/projectsData';
+import ReadmeFrameModal from '../UI/ReadmeFrameModal';
 
-// All 14 projects compiled into the 3D drift wall
-const DRIFT_PROJECTS = [
-  ...featuredData.items.map((item) => ({
-    ...item,
-    category: 'Featured Work',
-  })),
-  ...screensaverData.items.map((item) => ({
-    ...item,
-    category: 'Screensavers',
-  })),
-  ...logoData.items.map((item) => ({
-    ...item,
-    category: 'Logos & Identity',
-  })),
-  ...npmData.items.map((item) => ({
-    ...item,
-    category: 'NPM Packages',
-    href: npmData.link,
-  })),
-];
+/* ---------- tiny inline icons (no extra deps) ---------- */
+const CopyIcon = () => (
+  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="9" y="9" width="11" height="11" rx="2" />
+    <path d="M5 15V6a2 2 0 0 1 2-2h9" />
+  </svg>
+);
+const CheckIcon = () => (
+  <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M5 12.5l4.5 4.5L19 7.5" />
+  </svg>
+);
+const ExternalIcon = () => (
+  <svg viewBox="0 0 24 24" className="h-3 w-3" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M7 17L17 7M9 7h8v8" />
+  </svg>
+);
 
-/* ── FULLSCREEN LIGHTBOX ───────────────────────────────────── */
-function Lightbox({ src, onClose }) {
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
-    if (src) window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [src, onClose]);
+const linkBtn =
+  'h-9 px-3.5 rounded-lg border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.07] hover:border-white/20 text-ink-soft hover:text-ink font-sans text-xs font-semibold inline-flex items-center justify-center gap-1.5 no-underline transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60';
 
-  return (
-    <AnimatePresence>
-      {src && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.18 }}
-          onClick={onClose}
-          className="fixed inset-0 z-[9999] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6"
-        >
-          <motion.img
-            src={src}
-            alt="Preview"
-            initial={{ scale: 0.92, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.94, opacity: 0 }}
-            transition={{ type: 'spring', damping: 26, stiffness: 350 }}
-            className="max-w-[92vw] max-h-[86vh] object-contain rounded-xl shadow-2xl border border-white/10"
-            onClick={(e) => e.stopPropagation()}
-          />
-          <button
-            type="button"
-            onClick={onClose}
-            className="absolute top-5 right-6 bg-transparent border-none text-white/80 hover:text-white text-2xl cursor-pointer font-sans p-2"
-            aria-label="Close image preview"
-          >
-            ✕
-          </button>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  );
-}
+function ProjectRow({ project, onOpenReadme }) {
+  const [copied, setCopied] = useState(false);
+  const command = project.command || project.installCmd;
 
-/* ── BIG STUDIO PROJECT DETAIL MODAL (Desktop & Mobile) ────── */
-function ProjectDetailModal({ project, onClose, onOpenLightbox }) {
-  const [activeImgIdx, setActiveImgIdx] = useState(0);
-
-  useEffect(() => {
-    setActiveImgIdx(0);
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [project, onClose]);
-
-  const images = project?.images?.length ? project.images : project?.image ? [project.image] : [];
-  const currentImage = images[activeImgIdx] || project?.image;
-  const techList = project?.languages || (project?.tech ? [project.tech] : []);
+  const handleCopy = async () => {
+    if (!command) return;
+    try {
+      await navigator.clipboard.writeText(command);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* clipboard blocked: fail silently */
+    }
+  };
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.2 }}
-      onClick={onClose}
-      className="fixed inset-0 z-[9990] flex items-center justify-center p-3 sm:p-6 lg:p-10 bg-black/80 backdrop-blur-sm"
-    >
-      <motion.div
-        initial={{ opacity: 0, scale: 0.94, y: 14 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.96, y: 10 }}
-        transition={{ type: 'spring', damping: 30, stiffness: 360 }}
-        onClick={(e) => e.stopPropagation()}
-        className="relative w-full max-w-5xl max-h-[90vh] bg-[#141414] border border-[#252525] rounded-2xl overflow-hidden shadow-[0_30px_90px_rgba(0,0,0,0.95)] flex flex-col"
-        role="dialog"
-        aria-modal="true"
-      >
-        {/* Top Bar */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06] shrink-0 bg-surface">
-          <div className="flex items-center gap-3 min-w-0">
-            <span className="font-sans text-xs font-semibold text-ink-muted px-2.5 py-0.5 rounded-md bg-white/[0.04] border border-white/[0.06] shrink-0">
-              {project.category || 'Project'}
-            </span>
-            <h2 className="font-display font-bold text-lg sm:text-xl text-ink m-0 tracking-tight truncate">
-              {project.title}
-            </h2>
-            {project.date && (
-              <span className="font-sans text-xs text-ink-muted hidden sm:inline">
-                • {project.date}
+    <li className="flex flex-col rounded-2xl border border-[#252525] bg-[#141414] p-4 sm:p-5 transition-colors duration-150 hover:border-white/20">
+      <div className="flex h-full flex-col justify-between gap-5">
+        {/* Identity: logo + name + tagline */}
+        <div className="flex min-w-0 items-center gap-4">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.03] sm:h-14 sm:w-14">
+            {project.logo ? (
+              <img src={project.logo} alt="" className="h-full w-full object-contain p-2" loading="lazy" />
+            ) : (
+              <span className="font-display text-lg font-bold text-ink-soft">
+                {project.name?.charAt(0)}
               </span>
             )}
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="font-sans text-xs font-medium text-ink-muted hover:text-ink bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] rounded-lg px-3 py-1.5 cursor-pointer transition-colors shrink-0"
-          >
-            ✕ Close
-          </button>
-        </div>
 
-        {/* Modal Content */}
-        <div className="flex-1 overflow-y-auto no-scrollbar p-6 sm:p-8">
-          <div className="grid grid-cols-1 md:grid-cols-[1.3fr_1fr] gap-6 lg:gap-8 items-start">
-            {/* Left Column: Big Screenshot Showcase */}
-            <div className="flex flex-col gap-3">
-              {currentImage && (
-                <div
-                  onClick={() => onOpenLightbox(currentImage)}
-                  className="relative w-full aspect-video rounded-xl overflow-hidden cursor-zoom-in bg-[#181818] border border-white/[0.08] flex items-center justify-center group shadow-md"
-                >
-                  <img
-                    src={currentImage}
-                    alt={project.title}
-                    className="w-full h-full object-contain block transition-transform duration-300 group-hover:scale-102"
-                  />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center pointer-events-none">
-                    <span className="font-sans text-xs text-ink bg-black/80 backdrop-blur-xs px-3 py-1.5 rounded-lg border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity">
-                      Click to Expand ⤢
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {/* Multiple Images Carousel Strip */}
-              {images.length > 1 && (
-                <div className="flex items-center gap-2.5 overflow-x-auto no-scrollbar py-1">
-                  {images.map((img, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => setActiveImgIdx(idx)}
-                      className={`relative shrink-0 w-20 sm:w-24 aspect-video rounded-lg overflow-hidden border cursor-pointer transition-all ${idx === activeImgIdx
-                        ? 'border-white/70 ring-1 ring-white/50 shadow-sm'
-                        : 'border-white/10 opacity-50 hover:opacity-90'
-                        }`}
-                    >
-                      <img src={img} alt={`Slide ${idx + 1}`} className="w-full h-full object-cover" />
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* Right Column: Information, Stack & CTAs */}
-            <div className="flex flex-col justify-between gap-6">
-              <div className="flex flex-col gap-4">
-                <div>
-                  <span className="font-sans text-xs font-semibold text-ink-muted uppercase tracking-wider block mb-2">
-                    Overview
-                  </span>
-                  <p className="font-sans text-sm sm:text-base font-normal text-ink-soft leading-relaxed m-0">
-                    {project.summary || project.description}
-                  </p>
-                </div>
-
-                {techList.length > 0 && (
-                  <div className="flex flex-col gap-2 pt-1 border-t border-white/[0.06]">
-                    <span className="font-sans text-xs font-semibold text-ink-muted uppercase tracking-wider">
-                      Stack & Architecture
-                    </span>
-                    <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                      {techList.map((t) => (
-                        <span
-                          key={t}
-                          className="font-sans text-xs font-medium text-ink-soft bg-white/[0.04] border border-white/[0.08] rounded-lg px-2.5 py-1"
-                        >
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* CTA Action Buttons */}
-              {(project.website || project.github) && (
-                <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-white/[0.06]">
-                  {project.website && (
-                    <div className="relative bg-[#141414] border border-[#252525] rounded-xl h-[42px] min-w-[140px] shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
-                      <a
-                        href={project.website}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="absolute inset-0 flex items-center justify-center gap-1.5 font-sans text-xs font-bold text-bg bg-[#EDEAE3] border border-[#252525] border-b-[4px] rounded-xl shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] no-underline transition-all duration-75 hover:border-b-[2px] hover:translate-y-[2px] active:border-b-0 active:translate-y-[4px]"
-                      >
-                        Live Website ↗
-                      </a>
-                    </div>
-                  )}
-                  {project.github && (
-                    <div className="relative bg-[#141414] border border-[#252525] rounded-xl h-[42px] min-w-[130px] shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
-                      <a
-                        href={project.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="absolute inset-0 flex items-center justify-center gap-1.5 font-sans text-xs font-semibold text-ink-soft hover:text-ink bg-[#1A1A1A] border border-[#252525] border-b-[4px] rounded-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] no-underline transition-all duration-75 hover:bg-[#222222] hover:border-b-[2px] hover:translate-y-[2px] active:border-b-0 active:translate-y-[4px]"
-                      >
-                        GitHub ↗
-                      </a>
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
+          <div className="min-w-0">
+            <h3 className="m-0 truncate font-display text-lg font-bold leading-tight tracking-tight text-ink sm:text-xl">
+              {project.name}
+            </h3>
+            <p className="m-0 mt-1 line-clamp-2 font-sans text-[13px] leading-relaxed text-ink-soft">
+              {project.tagline}
+            </p>
           </div>
         </div>
-      </motion.div>
-    </motion.div>
+
+        {/* Command + actions */}
+        <div className="flex flex-col gap-3">
+          {command && (
+            <button
+              type="button"
+              onClick={handleCopy}
+              title="Copy command"
+              aria-label={`Copy command: ${command}`}
+              className="group/cmd flex h-9 min-w-0 items-center justify-between gap-3 rounded-lg border border-white/[0.08] bg-[#0E0E0E] px-3 text-left transition-colors hover:border-white/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60 w-full"
+            >
+              <span className="flex min-w-0 items-center gap-2 font-mono text-xs text-ink">
+                <span className="select-none text-ink-muted">$</span>
+                <span className="truncate">{command}</span>
+              </span>
+              <span
+                aria-live="polite"
+                className={`flex shrink-0 items-center gap-1 font-sans text-[11px] transition-colors ${
+                  copied ? 'text-emerald-400' : 'text-ink-muted group-hover/cmd:text-ink'
+                }`}
+              >
+                {copied ? <CheckIcon /> : <CopyIcon />}
+                <span className="hidden sm:inline">{copied ? 'Copied' : 'Copy'}</span>
+              </span>
+            </button>
+          )}
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => onOpenReadme(project)}
+              className="inline-flex h-9 flex-[2] items-center justify-center gap-1.5 rounded-lg border border-[#252525] border-b-[3px] bg-[#EDEAE3] px-4 font-sans text-xs font-bold text-bg shadow-[inset_0_1.5px_0_rgba(255,255,255,0.4)] transition-all duration-75 hover:translate-y-[1px] hover:border-b-2 active:translate-y-[3px] active:border-b-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60"
+            >
+              README
+            </button>
+
+            <a href={project.github} target="_blank" rel="noopener noreferrer" className={`${linkBtn} flex-1`}>
+              GitHub <ExternalIcon />
+            </a>
+
+            {project.npm && (
+              <a href={project.npm} target="_blank" rel="noopener noreferrer" className={`${linkBtn} flex-1`}>
+                npm <ExternalIcon />
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </li>
   );
 }
 
-/* ── ROOT PROJECTS BENTO ───────────────────────────────────── */
-export default function ProjectsBento({ isActive = true }) {
-  const isMobile = useIsMobile();
-  const [lightbox, setLightbox] = useState(null);
-  const [selectedProject, setSelectedProject] = useState(null);
+export default function ProjectsBento() {
+  const [selectedReadmeProject, setSelectedReadmeProject] = useState(null);
+  const projects = projectsData || [];
 
   return (
-    <div className="h-full w-full overflow-hidden relative bg-surface">
-      {/* 3D Drift Wall - Fills entire section edge-to-edge */}
-      <DriftWall
-        items={DRIFT_PROJECTS}
-        isActive={isActive && !selectedProject}
-        columns={isMobile ? 3 : 5}
-        tileWidth={isMobile ? 150 : 330}
-        tileHeight={isMobile ? 100 : 220}
-        gap={isMobile ? 12 : 24}
-        radius={14}
-        tilt={isMobile ? 8 : 14}
-        turn={isMobile ? -6 : -12}
-        roll={0}
-        perspective={isMobile ? 850 : 1300}
-        depth={isMobile ? 60 : 120}
-        speed={isMobile ? 22 : 36}
-        direction="up"
-        variance={0.45}
-        parallax={isMobile ? 0.3 : 0.65}
-        lift={isMobile ? 36 : 72}
-        fade={0.4}
-        dim={0.68}
-        grayscale={false}
-        overlayColor="#090909"
-        onTileClick={(item) => setSelectedProject(item)}
-        className="w-full h-full"
-      />
+    <div className="h-full w-full overflow-y-auto bg-surface text-ink">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 p-5 sm:p-6 lg:gap-8 lg:p-10">
+        {/* Header */}
+        <header className="flex flex-col gap-2 border-b border-white/[0.08] pb-5 sm:flex-row sm:items-end sm:justify-between sm:gap-6">
+          <div>
+            <h1 className="m-0 font-display text-2xl font-bold leading-tight tracking-tight text-ink sm:text-3xl lg:text-4xl">
+              Published packages &amp; tools
+            </h1>
+            <p className="m-0 mt-2 max-w-md font-sans text-xs leading-relaxed text-ink-soft sm:text-sm">
+              Open-source CLI tools on npm. Copy an install command or read the full docs without leaving the page.
+            </p>
+          </div>
+          <span className="shrink-0 font-sans text-xs text-ink-muted">
+            {projects.length} {projects.length === 1 ? 'project' : 'projects'}
+          </span>
+        </header>
 
-      {/* Ambient gradient scrim - seamlessly darkens background behind heading with no container box */}
-      <div className="absolute inset-x-0 top-0 h-64 md:h-full md:inset-y-0 md:left-0 md:w-[580px] pointer-events-none z-[5] bg-gradient-to-b md:bg-gradient-to-r from-[#090909] via-[#090909]/90 md:via-[#090909]/80 to-transparent" />
-
-      {/* Editorial Heading Overlay - Raw floating text, 450px width on both screens */}
-      <div className="absolute z-10 pointer-events-none select-none w-[450px] max-w-[calc(100vw-32px)] top-4 left-4 sm:top-6 sm:left-6 md:top-1/2 md:-translate-y-1/2 md:left-8 lg:left-12">
-        <h2 className="font-display font-extrabold text-2xl sm:text-3xl md:text-4xl lg:text-[44px] text-ink uppercase tracking-tight leading-[0.95] m-0 drop-shadow-[0_4px_24px_rgba(0,0,0,0.95)]">
-          Projects I built with passion.
-        </h2>
+        {/* Project list */}
+        <ul className="m-0 grid list-none grid-cols-1 gap-3 p-0 sm:gap-4 md:grid-cols-2 lg:gap-5">
+          {projects.map((project) => (
+            <ProjectRow
+              key={project.id}
+              project={project}
+              onOpenReadme={(p) => setSelectedReadmeProject(p)}
+            />
+          ))}
+        </ul>
       </div>
 
-      {/* Big Studio Project Detail Modal with smooth entrance and exit animations */}
-      <AnimatePresence>
-        {selectedProject && (
-          <ProjectDetailModal
-            key={selectedProject.title || 'detail-modal'}
-            project={selectedProject}
-            onClose={() => setSelectedProject(null)}
-            onOpenLightbox={(img) => setLightbox(img)}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Fullscreen Zoom Lightbox */}
-      <Lightbox src={lightbox} onClose={() => setLightbox(null)} />
+      {/* In-App GitHub README Frame Modal */}
+      <ReadmeFrameModal
+        project={selectedReadmeProject}
+        isOpen={Boolean(selectedReadmeProject)}
+        onClose={() => setSelectedReadmeProject(null)}
+      />
     </div>
   );
 }

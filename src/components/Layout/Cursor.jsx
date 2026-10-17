@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 
 function CustomCursor() {
   const cursorRef = useRef(null);
@@ -80,10 +81,10 @@ function CustomCursor() {
 
   if (!isVisible) return null;
 
-  return (
+  const cursorNode = (
     <div
       ref={cursorRef}
-      className="fixed top-0 left-0 pointer-events-none z-[99999] hidden md:block will-change-transform"
+      className="fixed top-0 left-0 pointer-events-none z-[9999999] hidden md:block will-change-transform"
       style={{
         transform: 'translate3d(-100px, -100px, 0)',
         opacity: 0,
@@ -118,6 +119,8 @@ function CustomCursor() {
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined' ? createPortal(cursorNode, document.body) : null;
 }
 
 export default CustomCursor;

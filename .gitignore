@@ -30,9 +30,3 @@ dist-ssr
 !.dev.vars.example
 !.env.example
 
-src/assets/Auditraze
-src/assets/FrensLynk
-src/assets/Gradiator
-src/assets/Pollu.io
-src/assets/Cerium
-src/assets/screensavers

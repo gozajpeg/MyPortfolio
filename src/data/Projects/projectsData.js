@@ -32,10 +32,18 @@ export const projectsData = [
     tech: ['Node.js', 'AST / Dep Check', 'Native APIs', 'Zero-Config'],
   },
   {
-    id: 'priva-cli',
-    name: 'priva-cli',
-    title: 'priva-cli',
+    id: 'preva',
+    name: 'preva-cli',
+    title: 'preva-cli',
     category: 'CLI Tool / NPM Package',
     version: '1.0.0',
+    tagline: 'Same Git, just with a preview.',
+    repo: 'preva',
+    branch: 'master',
+    github: 'https://github.com/gozajpeg/preva',
+    npm: 'https://www.npmjs.com/package/preva-cli',
+    command: 'npm install -g preva-cli',
+    logo: worksLogos.preva,
+    tech: ['Node.js', 'CLI', 'Git'],
   }
 ];

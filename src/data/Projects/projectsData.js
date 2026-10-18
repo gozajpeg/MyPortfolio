@@ -14,7 +14,7 @@ export const projectsData = [
     npm: 'https://www.npmjs.com/package/prins-cli',
     command: 'npm install -g prins-cli',
     logo: worksLogos.prins,
-    tech: ['Node.js', 'CLI', 'NPM Registry API', 'Vitest'],
+    tech: ['Node.js', 'CLI', 'Vitest'],
   },
   {
     id: 'depshred',
@@ -29,7 +29,7 @@ export const projectsData = [
     npm: 'https://www.npmjs.com/package/depshred',
     command: 'npx depshred',
     logo: worksLogos.depshred,
-    tech: ['Node.js', 'AST / Dep Check', 'Native APIs', 'Zero-Config'],
+    tech: ['Node.js', 'AST / Dep Check', 'Native APIs'],
   },
   {
     id: 'preva',

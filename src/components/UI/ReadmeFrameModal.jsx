@@ -37,7 +37,21 @@ npx depshred
 ### Why depshred?
 When following tutorials or generating code with AI, it is easy to end up with dozens of unnecessary packages for tasks modern Node.js already handles natively (e.g. \`dotenv\`, \`uuid\`, \`rimraf\`).
 
-**depshred** analyzes your dependencies, identifies packages you do not actually need, and demonstrates how to replace them with clean, native Node standard library code.`
+**depshred** analyzes your dependencies, identifies packages you do not actually need, and demonstrates how to replace them with clean, native Node standard library code.`,
+
+  preva: `# preva
+
+> **Same Git, just with a preview.**  
+> Know what is leaving your machine before you push.
+
+\`\`\`bash
+npm install -g preva-cli
+# or run directly:
+npx preva-cli
+\`\`\`
+
+### Overview
+preva provides interactive previews and visual confirmation before executing Git commands like \`commit\`, \`push\`, and branch operations.`
 };
 
 /**
@@ -85,6 +99,9 @@ function MarkdownRenderer({ content, repo, branch }) {
 
     // Unordered lists
     raw = raw.replace(/^\s*[-*]\s+(.*)$/gim, '<li class="text-ink-soft text-sm leading-relaxed ml-4 list-disc">$1</li>');
+
+    // Markdown images ![alt](url) -> converted before standard links
+    raw = raw.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" class="rounded-xl border border-white/[0.08] max-w-full my-4" loading="lazy" />');
 
     // Standard markdown links [text](url)
     raw = raw.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-ink underline decoration-white/30 hover:decoration-white font-medium transition-colors">$1</a>');

@@ -1,239 +1,217 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
-import SquareScanOverlay from '../UI/SquareScanOverlay';
+import { useState, useEffect } from 'react';
+import { flushSync } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import HeroBento from '../bento/HeroBento';
 import AboutBento from '../bento/AboutBento';
-import ProjectsBento from '../bento/ProjectsBento';
+import ProjectsBento, { AllProjectsScreen } from '../bento/ProjectsBento';
+import CapabilitiesBento from '../bento/CapabilitiesBento';
+import WorkflowBento from '../bento/WorkflowBento';
 import SkillsBento from '../bento/SkillsBento';
+import GitHubBento from '../bento/GitHubBento';
 import SocialsBento from '../bento/SocialsBento';
 
-const BENTO_META = {
-  hero: { id: 'hero', keyNumber: '1', label: 'Home', index: '01', Component: HeroBento },
-  about: { id: 'about', keyNumber: '2', label: 'About', index: '02', Component: AboutBento },
-  projects: { id: 'projects', keyNumber: '3', label: 'Projects', index: '03', Component: ProjectsBento },
-  skills: { id: 'skills', keyNumber: '4', label: 'Skills', index: '04', Component: SkillsBento },
-  socials: { id: 'socials', keyNumber: '5', label: 'Connect', index: '05', Component: SocialsBento },
-};
+function SunIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+    </svg>
+  );
+}
 
-const INITIAL_QUEUE = ['hero', 'about', 'projects', 'skills', 'socials'];
+function MoonIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+    </svg>
+  );
+}
 
-function BentoLayout() {
-  const [queue, setQueue] = useState(() => {
-    const hash = window.location.hash.replace('#', '').toLowerCase();
-    if (INITIAL_QUEUE.includes(hash)) {
-      const filtered = INITIAL_QUEUE.filter(id => id !== hash);
-      return [hash, ...filtered];
+export default function BentoLayout() {
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== 'undefined') {
+      const saved = window.localStorage.getItem('goza-theme');
+      if (saved === 'dark' || saved === 'light') return saved;
     }
-    return INITIAL_QUEUE;
+    return 'dark';
   });
 
-  const [isAnimating, setIsAnimating] = useState(false);
-  const [activeKey, setActiveKey] = useState(() => queue[0]);
-  const [prevActiveKey, setPrevActiveKey] = useState(null);
-  const [isSectionScanning, setIsSectionScanning] = useState(false);
-  const [erasingQueueId, setErasingQueueId] = useState(null);
-  const [dormantQueueId, setDormantQueueId] = useState(null);
-  const [revealingQueueId, setRevealingQueueId] = useState(null);
-  const prevSectionRef = useRef(null);
-  const incomingKeycapRef = useRef(null);
+  // 'home' | 'projects'
+  const [view, setView] = useState('home');
 
-  const handleSelect = useCallback((selectedId) => {
-    if (isAnimating || selectedId === queue[0]) return;
-    setIsAnimating(true);
-
-    const oldActiveId = queue[0];
-    setPrevActiveKey(oldActiveId);
-    incomingKeycapRef.current = oldActiveId;
-
-    // Build new queue: selected -> front, old active -> back
-    const filtered = queue.filter(id => id !== selectedId);
-    const oldActive = filtered.shift();
-    filtered.push(oldActive);
-    const finalQueue = [selectedId, ...filtered];
-
-    // ── 1ST: Snappy click dissolve / erase scan on the clicked bento queue keycap (0ms to 130ms)
-    setErasingQueueId(selectedId);
-    setRevealingQueueId(null);
-    setDormantQueueId(null);
-
-    // Sync URL hash
-    window.history.replaceState(null, '', `#${selectedId}`);
-
-    // ── 2ND: Erase ends -> Queue reorganizes with fluid spring, active section loads with forward scan (130ms)
-    setTimeout(() => {
-      setErasingQueueId(null);
-      setDormantQueueId(oldActiveId); // Holds incoming keycap covered
-      setRevealingQueueId(null);
-      setQueue(finalQueue);
-      setActiveKey(selectedId);
-      setIsSectionScanning(true);
-    }, 130);
-  }, [queue, isAnimating]);
-
-  const handleSectionScanComplete = useCallback(() => {
-    const incomingId = incomingKeycapRef.current;
-    setIsSectionScanning(false);
-    setPrevActiveKey(null);
-    setDormantQueueId(null);
-    setRevealingQueueId(incomingId);
-
-    // ── 3RD: Keycap reveal completes -> Release animation lock (180ms)
-    setTimeout(() => {
-      setRevealingQueueId(null);
-      setIsAnimating(false);
-    }, 180);
-  }, []);
-
-  // Keyboard navigation (1-5) and browser hash changes
   useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.target.matches('input, textarea')) return;
-      const keyMap = { '1': 'hero', '2': 'about', '3': 'projects', '4': 'skills', '5': 'socials' };
-      if (keyMap[e.key]) {
-        e.preventDefault();
-        handleSelect(keyMap[e.key]);
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.setAttribute('data-theme', 'dark');
+    } else {
+      root.removeAttribute('data-theme');
+    }
+    try {
+      window.localStorage.setItem('goza-theme', theme);
+    } catch {
+      /* ignore storage errors */
+    }
+  }, [theme]);
+
+  // Custom Origin-Aware Circular Iris Reveal Theme Transition
+  const handleToggleTheme = (e) => {
+    e.stopPropagation();
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    const root = document.documentElement;
+
+    const applyTheme = (targetTheme) => {
+      if (targetTheme === 'dark') {
+        root.setAttribute('data-theme', 'dark');
+      } else {
+        root.removeAttribute('data-theme');
       }
+      setTheme(targetTheme);
     };
 
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace('#', '').toLowerCase();
-      if (INITIAL_QUEUE.includes(hash) && hash !== queue[0]) {
-        handleSelect(hash);
-      }
-    };
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('hashchange', handleHashChange);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('hashchange', handleHashChange);
-    };
-  }, [handleSelect, queue]);
+    if (
+      typeof document === 'undefined' ||
+      !document.startViewTransition ||
+      prefersReducedMotion
+    ) {
+      applyTheme(nextTheme);
+      return;
+    }
 
-  const activeId = queue[0];
-  const { Component: ActiveComponent } = BENTO_META[activeId];
-  const PrevComponent = prevActiveKey && prevActiveKey !== activeId ? BENTO_META[prevActiveKey]?.Component : null;
-  const queueIds = queue.slice(1);
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX || rect.left + rect.width / 2;
+    const y = e.clientY || rect.top + rect.height / 2;
+    const endRadius = Math.hypot(
+      Math.max(x, window.innerWidth - x),
+      Math.max(y, window.innerHeight - y)
+    );
+
+    root.classList.add('theme-transitioning');
+
+    const transition = document.startViewTransition(() => {
+      flushSync(() => {
+        applyTheme(nextTheme);
+      });
+    });
+
+    transition.ready
+      .then(() => {
+        root.animate(
+          {
+            clipPath: [
+              `circle(0px at ${x}px ${y}px)`,
+              `circle(${endRadius}px at ${x}px ${y}px)`,
+            ],
+          },
+          {
+            duration: 600,
+            easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+            pseudoElement: '::view-transition-new(root)',
+          }
+        );
+      })
+      .catch(() => {
+        /* ignore view transition cancellation */
+      });
+
+    transition.finished.finally(() => {
+      root.classList.remove('theme-transitioning');
+    });
+  };
+
+  const handleSwitchView = (nextView) => {
+    setView(nextView);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
   return (
-    <div
-      className="flex flex-col w-full h-full box-border overflow-hidden bg-bg p-2 bento-container-mobile gap-2 sm:p-2.5 sm:gap-2.5"
-    >
+    <div className="min-h-screen w-full bg-bg text-ink">
+      {/* ── MINIMALIST TOP PILL (Home, Project, Toggle) ── */}
+      <div className="fixed top-4 left-1/2 -translate-x-1/2 lg:left-auto lg:right-8 lg:translate-x-0 z-50">
+        <nav
+          aria-label="Primary navigation"
+          className="theme-surface flex items-center gap-1 rounded-full border border-border-strong p-1.5 shadow-md"
+        >
+          <button
+            type="button"
+            onClick={() => handleSwitchView('home')}
+            className={`relative h-8 px-4 rounded-full font-sans text-xs font-medium transition-colors cursor-pointer border-none ${
+              view === 'home'
+                ? 'bg-ink text-bg font-semibold'
+                : 'bg-transparent text-ink-soft hover:text-ink hover:bg-surface-hover/60'
+            }`}
+          >
+            Home
+          </button>
 
-      {/* ── ACTIVE BENTO ─────────────────────────────────────── */}
-      <div className="flex-1 min-h-0 overflow-hidden">
-        <div className="keycap keycap-active h-full w-full overflow-hidden relative bg-surface">
-          {/* Base Layer: Active (new) section being revealed underneath - isolated to prevent z-index leaks */}
-          <div className="w-full h-full relative z-0 isolate">
-            <ActiveComponent isActive={true} onNavigate={handleSelect} />
-          </div>
+          <button
+            type="button"
+            onClick={() => handleSwitchView('projects')}
+            className={`relative h-8 px-4 rounded-full font-sans text-xs font-medium transition-colors cursor-pointer border-none ${
+              view === 'projects'
+                ? 'bg-ink text-bg font-semibold'
+                : 'bg-transparent text-ink-soft hover:text-ink hover:bg-surface-hover/60'
+            }`}
+          >
+            Project
+          </button>
 
-            {/* Overlapping Top Layer: Previous section - stays 100% visible ahead of the scanning wave and wipes away in real time */}
-            {isSectionScanning && PrevComponent && (
-              <div
-                ref={prevSectionRef}
-                style={{
-                  clipPath: 'polygon(0% 0, 100% 0, 100% 100%, 0% 100%, 0% 50%)',
-                  willChange: 'clip-path',
-                }}
-                className="absolute inset-0 w-full h-full z-10 pointer-events-none bg-surface overflow-hidden"
-              >
-                <PrevComponent isActive={false} onNavigate={handleSelect} />
-              </div>
-            )}
-
-            {/* 2nd: Fast horizontal scanning squares overlay across sections (transparent background) */}
-            <SquareScanOverlay
-              active={isSectionScanning}
-              direction="horizontal"
-              duration={380}
-              backgroundFill="transparent"
-              className="z-30"
-              onProgress={(progress) => {
-                if (prevSectionRef.current) {
-                  // Synchronized chevron boundary matching SquareScanOverlay's horizontal wave:
-                  // The wave has a forward chevron (center is ahead, top & bottom trail behind)
-                  const centerOffset = Math.min(100, Math.max(0, progress * 118));
-                  const edgeOffset = Math.min(100, Math.max(0, progress * 118 - 10));
-                  prevSectionRef.current.style.clipPath = `polygon(${edgeOffset}% 0, 100% 0, 100% 100%, ${edgeOffset}% 100%, ${centerOffset}% 50%)`;
-                }
-              }}
-              onComplete={handleSectionScanComplete}
-            />
-        </div>
+          <button
+            type="button"
+            onClick={handleToggleTheme}
+            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            className="h-8 w-8 rounded-full flex items-center justify-center bg-surface-hover/70 hover:bg-surface-hover text-ink transition-colors cursor-pointer border-none shrink-0"
+          >
+            {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
+          </button>
+        </nav>
       </div>
 
-      {/* ── QUEUE STRIP ──────────────────────────────────────── */}
-      <div className="no-scrollbar flex-none flex gap-1.5 sm:gap-2 overflow-hidden h-[clamp(52px,7.5vh,60px)] sm:h-[clamp(76px,12vh,105px)]">
-        {queueIds.map((id) => {
-          const { label, index, keyNumber } = BENTO_META[id];
-          const isErasing = erasingQueueId === id;
-          const isRevealing = revealingQueueId === id;
-          const isDormant = dormantQueueId === id;
-
-          return (
+      {/* ── MAIN CONTENT AREA ── */}
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 pt-20 pb-16 lg:py-12">
+        <AnimatePresence mode="wait">
+          {view === 'home' ? (
             <motion.div
-              layout
-              key={id}
-              transition={{
-                layout: { type: 'spring', stiffness: 500, damping: 36, mass: 0.8 },
-              }}
-              className="flex-1 min-w-0 h-full overflow-hidden relative"
-              onClick={() => handleSelect(id)}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => e.key === 'Enter' && handleSelect(id)}
-              aria-label={`Open ${label} tab`}
+              key="home-view"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              className="grid grid-cols-1 lg:grid-cols-[330px_minmax(0,1fr)] xl:grid-cols-[350px_minmax(0,1fr)] gap-5 lg:gap-6 items-start"
             >
-              {/* 1st: Snappy down-to-up erase scan overlay on clicked keycap (130ms) */}
-              <SquareScanOverlay
-                active={isErasing}
-                direction="vertical-up"
-                duration={130}
-                backgroundFill="#090909"
-                className="z-20"
-              />
+              {/* Left 30% Column: Resume Sidebar + Icon-Based Links */}
+              <div className="lg:sticky lg:top-12 w-full">
+                <HeroBento />
+              </div>
 
-              {/* 2nd: Dormant solid cover while queue moves and active section loads */}
-              {isDormant && (
-                <div className="absolute inset-0 bg-[#090909] z-20 rounded-[inherit] pointer-events-none" />
-              )}
-
-              {/* 3rd: Snappy top-to-down reveal scan overlay on newly placed keycap (180ms) */}
-              <SquareScanOverlay
-                active={isRevealing}
-                direction="vertical"
-                duration={180}
-                backgroundFill="#090909"
-                className="z-20"
-              />
-
-              {/* The keycap box itself with Framer Motion tactile micro-interactions */}
-              <motion.div
-                whileHover={!isErasing && !isRevealing && !isDormant ? { scale: 1.015, y: -1 } : undefined}
-                whileTap={!isErasing && !isRevealing && !isDormant ? { scale: 0.985, y: 1 } : undefined}
-                transition={{ duration: 0.1 }}
-                className="keycap keycap-queue h-full w-full flex flex-col items-center justify-center gap-0.5 sm:gap-1 px-1 py-1 sm:px-3 sm:py-2 select-none relative group overflow-hidden z-10"
-              >
-                <div className="flex items-center gap-1.5 leading-none">
-                  <span className="font-sans text-[9px] sm:text-[10px] font-medium text-ink-muted/80">
-                    {index}
-                  </span>
-                  <span className="font-sans text-[8.5px] text-ink-muted/40 hidden sm:inline">
-                    {keyNumber}
-                  </span>
-                </div>
-
-                <span className="font-display font-bold text-[clamp(9.5px,2.6vw,12.5px)] sm:text-[clamp(11px,1.15vw,14px)] text-ink-soft group-hover:text-ink tracking-tight text-center leading-tight transition-colors duration-150 truncate max-w-full">
-                  {label}
-                </span>
-              </motion.div>
+              {/* Right 70% Column: Short About + Top 3 Recent Projects + What I Build + How I Build + Stack + GitHub Activity + CTA/Contact */}
+              <div className="w-full min-w-0 flex flex-col gap-7">
+                <AboutBento />
+                <ProjectsBento onOpenAllProjects={() => handleSwitchView('projects')} />
+                <CapabilitiesBento />
+                <WorkflowBento />
+                <SkillsBento />
+                <GitHubBento />
+                <SocialsBento />
+              </div>
             </motion.div>
-          );
-        })}
+          ) : (
+            <motion.div
+              key="projects-view"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <AllProjectsScreen onBackHome={() => handleSwitchView('home')} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
 }
-
-export default BentoLayout;

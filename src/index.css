@@ -1,77 +1,46 @@
 @import "tailwindcss";
 
-/* ─── DESIGN TOKENS ─────────────────────────────────────────────────────── */
+/* ─── MINIMALIST LIGHT & DARK DESIGN TOKENS ─────────────────────────────── */
 @theme {
-  --font-sans: "Space Grotesk", sans-serif;
-  --font-display: "Syne", sans-serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --font-square: "Orbitron", ui-monospace, monospace, sans-serif;
 
-  /* Dark monochrome palette */
-  --color-bg: #090909;
-  --color-surface: #141414;
-  --color-surface-subtle: #181818;
-  --color-cap: #1A1A1A;
-  --color-cap-hover: #222222;
-  --color-ink: #EDEAE3;
-  --color-ink-soft: #A0A09A;
-  --color-ink-muted: #585856;
-  --color-white: #F0EDE6;
-  --color-border: #252525;
-  --color-border-dim: #1E1E1E;
-
-  /* Spacing system */
-  --spacing-card-p: clamp(1.25rem, 2.5vw, 2.5rem);
-  --spacing-card-gap: clamp(1rem, 2vw, 2rem);
-
-  /* Animations */
-  --animate-card-enter: card-enter 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
-  --animate-label-fade: label-fade 0.25s ease 0.05s both;
-  --animate-ticker: ticker 22s linear infinite;
-  --animate-pulse-dot: pulse-dot 2.2s ease-in-out infinite;
+  --color-bg: var(--theme-bg, #F7F7F5);
+  --color-surface: var(--theme-surface, #FFFFFF);
+  --color-surface-hover: var(--theme-surface-hover, #EFECE6);
+  --color-ink: var(--theme-ink, #141413);
+  --color-ink-soft: var(--theme-ink-soft, #4A4945);
+  --color-ink-muted: var(--theme-ink-muted, #6B6A65);
+  --color-border: var(--theme-border, #E6E4DD);
+  --color-border-strong: var(--theme-border-strong, #CFCBC2);
 }
 
-@keyframes card-enter {
-  from {
-    opacity: 0;
-    transform: scale(0.988) translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+:root {
+  --theme-bg: #F7F7F5;
+  --theme-surface: #FFFFFF;
+  --theme-surface-hover: #EFECE6;
+  --theme-ink: #141413;
+  --theme-ink-soft: #4A4945;
+  --theme-ink-muted: #6B6A65;
+  --theme-border: #E6E4DD;
+  --theme-border-strong: #CFCBC2;
+  color-scheme: light;
 }
 
-@keyframes label-fade {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+[data-theme="dark"] {
+  --theme-bg: #0B0B0B;
+  --theme-surface: #131313;
+  --theme-surface-hover: #1C1C1C;
+  --theme-ink: #F2F1EC;
+  --theme-ink-soft: #B5B3AD;
+  --theme-ink-muted: #8C8A84;
+  --theme-border: #222222;
+  --theme-border-strong: #363636;
+  color-scheme: dark;
 }
 
-@keyframes ticker {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-50%);
-  }
-}
-@keyframes pulse-dot {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.4;
-    transform: scale(0.75);
-  }
-}
-
-/* ─── RESET & BASE ──────────────────────────────────────────────────────── */
+/* ─── RESET & SEAMLESS THEME TRANSITIONS ────────────────────────────────── */
 @layer base {
   *,
   *::before,
@@ -83,30 +52,52 @@
 
   html {
     scroll-behavior: smooth;
-    height: 100%;
-    height: var(--app-height, 100svh);
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-border-strong) transparent;
   }
 
   body {
     background-color: var(--color-bg);
     color: var(--color-ink);
     font-family: var(--font-sans);
-    height: 100%;
-    height: var(--app-height, 100svh);
-    overflow: hidden;
+    min-height: 100svh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    transition:
+      background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  #root {
-    width: 100%;
-    height: 100%;
-    height: var(--app-height, 100svh);
-    max-height: var(--app-height, 100svh);
-    overflow: hidden;
+  /* Minimalist Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
   }
 
-  /* Only hide native cursor on devices with true mouse pointer support */
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-border-strong);
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-ink-muted);
+  }
+
+  #root {
+    width: 100%;
+    min-height: 100svh;
+  }
+
+  /* Hide native cursor only on fine-pointer desktop devices */
   @media (hover: hover) and (pointer: fine) {
     * {
       cursor: none !important;
@@ -123,8 +114,9 @@
     -webkit-user-drag: none;
   }
 
-  *:focus {
-    outline: none !important;
+  *:focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
   }
 
   * {
@@ -132,7 +124,60 @@
   }
 }
 
-/* ─── UTILITIES ─────────────────────────────────────────────────────────── */
+/* Smooth surface & border transitions when toggling light/dark mode */
+.theme-surface {
+  background-color: var(--color-surface);
+  border-color: var(--color-border);
+  transition:
+    background-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Monochrome stack icon adaptation for Light and Dark mode */
+.stack-icon {
+  filter: brightness(0) opacity(0.75);
+  transition: filter 0.25s ease, transform 0.25s ease;
+}
+
+[data-theme="dark"] .stack-icon {
+  filter: brightness(1) opacity(0.82);
+}
+
+.group:hover .stack-icon,
+.stack-item-active .stack-icon {
+  filter: brightness(0) opacity(1);
+}
+
+[data-theme="dark"] .group:hover .stack-icon,
+[data-theme="dark"] .stack-item-active .stack-icon {
+  filter: brightness(1) opacity(1);
+}
+
+/* Custom Origin Iris Reveal for Light/Dark Mode View Transitions */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  display: block;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 9999;
+}
+
+/* Ensure instant color capture during View Transition snapshot */
+html.theme-transitioning *,
+html.theme-transitioning *::before,
+html.theme-transitioning *::after {
+  transition: none !important;
+}
+
 @utility no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -141,119 +186,15 @@
   }
 }
 
-@utility bento-scroll {
-  overflow-y: auto;
-  overflow-x: hidden;
-  height: 100%;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
-
-  &::-webkit-scrollbar {
-    width: 3px;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
-
-  &::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.08);
-    border-radius: 3px;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
-}
-
-@utility hairline {
-  border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-@utility bento-container-mobile {
-  padding-bottom: var(--bento-bottom-padding, max(5rem, calc(env(safe-area-inset-bottom, 0px) + 4.5rem)));
-
-  @media (min-width: 640px) {
-    padding-bottom: 0.625rem;
-  }
-}
-
-.is-ios .bento-container-mobile {
-  padding-bottom: max(7.5rem, calc(env(safe-area-inset-bottom, 0px) + 6rem));
-
-  @media (min-width: 640px) {
-    padding-bottom: 0.625rem;
-  }
-}
-
-@supports (-webkit-touch-callout: none) {
-  .bento-container-mobile {
-    padding-bottom: max(7.5rem, calc(env(safe-area-inset-bottom, 0px) + 6rem));
-
-    @media (min-width: 640px) {
-      padding-bottom: 0.625rem;
-    }
-  }
-}
-
-/* Keycap tactile design:
-   - border-bottom creates physical depth wall
-   - inset highlight gives tactile bevel edge */
-@utility keycap {
-  background: var(--color-cap);
-  border: 1.5px solid var(--color-border);
-  border-bottom-width: 3.5px;
-  border-radius: 12px;
-  position: relative;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.05),
-    inset 0 -2px 6px rgba(0, 0, 0, 0.5),
-    0 2px 8px rgba(0, 0, 0, 0.5);
-  transition: border-bottom-width 0.14s ease, background 0.14s ease, box-shadow 0.14s ease;
-
-  @media (min-width: 640px) {
-    border-bottom-width: 5px;
-    border-radius: 16px;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.05),
-      inset 0 -3px 8px rgba(0, 0, 0, 0.5),
-      0 2px 10px rgba(0, 0, 0, 0.5);
-  }
-}
-
-/* Active keycap = pressed state */
-@utility keycap-active {
-  background: var(--color-surface);
-  border-bottom-width: 2px;
-  box-shadow:
-    inset 0 3px 10px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.03);
-}
-
-/* Queue inactive keycaps */
-@utility keycap-queue {
-  cursor: pointer;
-  border-bottom-width: 3.5px;
-  transition: border-bottom-width 0.12s ease, background 0.15s ease, box-shadow 0.12s ease;
-
-  @media (min-width: 640px) {
-    border-bottom-width: 5px;
-  }
-
-  &:hover {
-    background: var(--color-cap-hover);
-    border-bottom-width: 2px;
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.07),
-      inset 0 -2px 6px rgba(0, 0, 0, 0.4),
-      0 2px 10px rgba(0, 0, 0, 0.5);
-  }
-}
-
-/* Smooth Accordion CSS Grid Rows */
-@utility accordion-row-closed {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
-  opacity: 0;
-}
-
-@utility accordion-row-open {
-  display: grid;
-  grid-template-rows: 1fr;
-  transition: grid-template-rows 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.25s ease;
-  opacity: 1;
 }

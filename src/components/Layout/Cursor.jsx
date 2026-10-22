@@ -1,37 +1,38 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
-function CustomCursor() {
+export default function CustomCursor() {
   const cursorRef = useRef(null);
   const innerRef = useRef(null);
-  const pathRef = useRef(null);
   const isPointerRef = useRef(false);
   const isClickingRef = useRef(false);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    // Only activate on devices with a fine mouse pointer
+    if (typeof window !== 'undefined' && !window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      return;
+    }
+
     const updateScale = () => {
       if (!innerRef.current) return;
-      const scale = isClickingRef.current ? 0.88 : isPointerRef.current ? 1.15 : 1;
+      const scale = isClickingRef.current ? 0.85 : isPointerRef.current ? 1.18 : 1;
       innerRef.current.style.transform = `scale(${scale})`;
-      if (pathRef.current) {
-        pathRef.current.setAttribute('fill', isPointerRef.current ? '#EDEAE3' : '#FFFFFF');
-      }
     };
 
     const handleMouseMove = (e) => {
       if (!cursorRef.current) return;
-      // Instantaneous 1:1 hardware tracking with 0ms transition delay
-      cursorRef.current.style.transform = `translate3d(${e.clientX - 4}px, ${e.clientY - 4}px, 0)`;
+      cursorRef.current.style.transform = `translate3d(${e.clientX - 3}px, ${e.clientY - 3}px, 0)`;
       if (cursorRef.current.style.opacity !== '1') {
         cursorRef.current.style.opacity = '1';
       }
     };
 
-    // Event delegation: only check for interactive elements when entering/leaving DOM nodes
     const handleMouseOver = (e) => {
       const target = e.target;
-      const clickable = Boolean(target?.closest('a, button, [role="button"], .keycap-queue, input, textarea, [tabindex="0"]'));
+      const clickable = Boolean(
+        target?.closest('a, button, [role="button"], input, textarea, [tabindex="0"], [data-interactive="true"]')
+      );
       if (isPointerRef.current !== clickable) {
         isPointerRef.current = clickable;
         updateScale();
@@ -49,15 +50,11 @@ function CustomCursor() {
     };
 
     const handleMouseLeave = () => {
-      if (cursorRef.current) {
-        cursorRef.current.style.opacity = '0';
-      }
+      if (cursorRef.current) cursorRef.current.style.opacity = '0';
     };
 
     const handleMouseEnter = () => {
-      if (cursorRef.current) {
-        cursorRef.current.style.opacity = '1';
-      }
+      if (cursorRef.current) cursorRef.current.style.opacity = '1';
     };
 
     setIsVisible(true);
@@ -95,23 +92,25 @@ function CustomCursor() {
         ref={innerRef}
         style={{
           transform: 'scale(1)',
-          transition: 'transform 0.1s cubic-bezier(0.16, 1, 0.3, 1)',
-          transformOrigin: '4px 4px',
+          transition: 'transform 0.14s cubic-bezier(0.22, 1, 0.36, 1)',
+          transformOrigin: '3px 3px',
         }}
       >
         <svg
-          width="22"
-          height="22"
+          width="20"
+          height="20"
           viewBox="0 0 22 22"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="drop-shadow-[0_2px_8px_rgba(0,0,0,0.75)]"
+          className="drop-shadow-[0_2px_6px_rgba(0,0,0,0.22)]"
         >
           <path
-            ref={pathRef}
             d="M3 2L19 11L11.5 13.5L8 20L3 2Z"
-            fill="#FFFFFF"
-            stroke="#090909"
+            style={{
+              fill: 'var(--color-ink)',
+              stroke: 'var(--color-bg)',
+              transition: 'fill 0.25s ease, stroke 0.25s ease',
+            }}
             strokeWidth="1.75"
             strokeLinejoin="round"
           />
@@ -122,5 +121,3 @@ function CustomCursor() {
 
   return typeof document !== 'undefined' ? createPortal(cursorNode, document.body) : null;
 }
-
-export default CustomCursor;

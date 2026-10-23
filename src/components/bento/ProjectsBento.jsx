@@ -113,15 +113,15 @@ function RecentProjectBox({ project, isExpanded, onActivate, onOpenReadme }) {
       style={{
         flex: isExpanded ? '2.4 1 0%' : '1 1 0%',
       }}
-      className={`theme-surface relative h-[225px] rounded-2xl border overflow-hidden cursor-pointer select-none transition-[flex,border-color,background-color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+      className={`theme-surface relative h-[225px] rounded-2xl border overflow-hidden cursor-pointer select-none transition-[flex-grow,border-color,background-color] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
         isExpanded
           ? 'border-border-strong'
           : 'border-border hover:border-border-strong'
       }`}
     >
-      {/* Single Persistent Logo (Never unmounts or fades out -> Zero Blink) */}
+      {/* Single Persistent Logo (Never unmounts or fades out -> Zero Blink, GPU-scaled) */}
       <div
-        className={`absolute z-10 flex flex-col items-center transition-[top,left,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+        className={`absolute z-10 flex flex-col items-center transition-[top,left,transform] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           isExpanded
             ? 'top-5 left-5 translate-x-0 translate-y-0'
             : 'top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
@@ -133,10 +133,11 @@ function RecentProjectBox({ project, isExpanded, onActivate, onOpenReadme }) {
             alt={project.name}
             width="80"
             height="80"
-            className={`object-contain shrink-0 transition-[width,height,transform] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            decoding="async"
+            className={`w-20 h-20 sm:w-[84px] sm:h-[84px] object-contain shrink-0 origin-top-left transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
               isExpanded
-                ? 'w-16 h-16 sm:w-[72px] sm:h-[72px]'
-                : 'w-20 h-20 sm:w-[88px] sm:h-[88px]'
+                ? 'scale-85'
+                : 'scale-100'
             }`}
           />
         ) : (
@@ -146,7 +147,7 @@ function RecentProjectBox({ project, isExpanded, onActivate, onOpenReadme }) {
         )}
 
         <span
-          className={`font-sans text-xs font-semibold text-ink text-center whitespace-nowrap transition-[opacity,margin,max-height] duration-300 ${
+          className={`font-sans text-xs font-semibold text-ink text-center whitespace-nowrap transition-opacity duration-200 ${
             isExpanded
               ? 'opacity-0 max-h-0 mt-0 overflow-hidden pointer-events-none'
               : 'opacity-100 max-h-6 mt-2.5'
@@ -374,6 +375,8 @@ export default function ProjectsBento({ onOpenAllProjects }) {
     return () => clearInterval(timer);
   }, [isHovered, recentProjects]);
 
+  const latestProject = recentProjects[0];
+
   return (
     <section id="projects" aria-label="My Recent Projects" className="flex flex-col gap-3.5">
       <div className="flex items-baseline justify-between px-1">
@@ -389,11 +392,79 @@ export default function ProjectsBento({ onOpenAllProjects }) {
         </button>
       </div>
 
-      {/* Uneven Flex Bento Row: Strictly 3 Most Recent Projects (1 Expanded + 2 Compact) */}
+      {/* Mobile View (< md): Shows ONLY the Single Latest Project */}
+      {latestProject && (
+        <div className="md:hidden theme-surface rounded-2xl border border-border-strong p-5 flex flex-col justify-between gap-4">
+          <div className="flex items-center gap-4">
+            {latestProject.logo && (
+              <img
+                src={latestProject.logo}
+                alt={latestProject.name}
+                width="72"
+                height="72"
+                className="w-16 h-16 object-contain shrink-0"
+              />
+            )}
+            <div className="min-w-0 flex-1">
+              <div className="flex items-baseline justify-between gap-2">
+                <h3 className="font-sans text-base font-bold text-ink tracking-tight m-0 truncate">
+                  {latestProject.name}
+                </h3>
+                <span className="font-sans text-[10px] font-medium text-ink-muted shrink-0">
+                  {formatReleaseLabel(latestProject.released)}
+                </span>
+              </div>
+              <p className="font-sans text-xs text-ink-soft leading-relaxed mt-1 m-0 line-clamp-2">
+                {latestProject.tagline}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2.5 w-full">
+            <CopyCommandButton command={latestProject.command || latestProject.installCmd} />
+
+            <div
+              className={`grid gap-2 w-full ${
+                latestProject.npm ? 'grid-cols-3' : 'grid-cols-2'
+              }`}
+            >
+              <button
+                type="button"
+                onClick={() => setSelectedReadmeProject(latestProject)}
+                className="h-9 px-3 rounded-xl bg-ink text-bg font-sans text-xs font-semibold hover:opacity-90 transition-opacity cursor-pointer border-none whitespace-nowrap"
+              >
+                README
+              </button>
+
+              <a
+                href={latestProject.github}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="h-9 px-3 rounded-xl border border-border hover:border-border-strong bg-transparent hover:bg-surface-hover/60 text-ink font-sans text-xs font-medium inline-flex items-center justify-center no-underline transition-colors whitespace-nowrap"
+              >
+                GitHub
+              </a>
+
+              {latestProject.npm && (
+                <a
+                  href={latestProject.npm}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="h-9 px-3 rounded-xl border border-border hover:border-border-strong bg-transparent hover:bg-surface-hover/60 text-ink font-sans text-xs font-medium inline-flex items-center justify-center no-underline transition-colors whitespace-nowrap"
+                >
+                  npm
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Desktop View (>= md): Uneven Flex Bento Row of Top 3 Most Recent Projects */}
       <ul
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className="m-0 p-0 list-none flex flex-col md:flex-row gap-3.5"
+        className="m-0 p-0 list-none hidden md:flex flex-row gap-3.5"
       >
         {recentProjects.map((project) => (
           <RecentProjectBox

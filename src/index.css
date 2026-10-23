@@ -171,11 +171,162 @@
   z-index: 9999;
 }
 
-/* Ensure instant color capture during View Transition snapshot */
-html.theme-transitioning *,
-html.theme-transitioning *::before,
-html.theme-transitioning *::after {
-  transition: none !important;
+/* Ensure instant color capture during View Transition snapshot without resetting layout transitions */
+html.theme-transitioning .theme-surface,
+html.theme-transitioning body {
+  transition-property: none !important;
+}
+
+/* Lightweight CSS Keyframes for Continuous Vector Loops (Zero Main-Thread JS Overhead) */
+@keyframes svgDrawLoop {
+  0%, 100% {
+    stroke-dashoffset: 1;
+    opacity: 0.25;
+  }
+  45%, 75% {
+    stroke-dashoffset: 0;
+    opacity: 0.95;
+  }
+}
+
+@keyframes svgPulseNode {
+  0%, 100% {
+    transform: scale(0.86);
+    opacity: 0.45;
+  }
+  50% {
+    transform: scale(1.14);
+    opacity: 1;
+  }
+}
+
+@keyframes svgRippleOut {
+  0% {
+    transform: scale(0.65);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1.18);
+    opacity: 0;
+  }
+}
+
+@keyframes svgBarScaleX {
+  0%, 100% {
+    transform: scaleX(0.08);
+    opacity: 0.25;
+  }
+  45%, 80% {
+    transform: scaleX(1);
+    opacity: 0.92;
+  }
+}
+
+@keyframes svgScanSweep {
+  0% {
+    transform: translateX(0px);
+    opacity: 0;
+  }
+  20%, 80% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateX(232px);
+    opacity: 0;
+  }
+}
+
+@keyframes svgFloatY {
+  0%, 100% {
+    transform: translateY(2px);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-2px);
+    opacity: 1;
+  }
+}
+
+@keyframes svgPacketLeft {
+  0%, 100% {
+    transform: translateX(0px);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateX(32px);
+    opacity: 1;
+  }
+}
+
+@keyframes svgPacketRight {
+  0%, 100% {
+    transform: translateX(0px);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateX(28px);
+    opacity: 1;
+  }
+}
+
+@keyframes trailBeamFlow {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(300%);
+  }
+}
+
+.svg-draw-loop {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: svgDrawLoop 4.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.svg-pulse-node {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: svgPulseNode 2.6s ease-in-out infinite;
+}
+
+.svg-ripple-out {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: svgRippleOut 2.4s ease-out infinite;
+}
+
+.svg-bar-scalex {
+  transform-box: fill-box;
+  transform-origin: left center;
+  animation: svgBarScaleX 3.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+.svg-scan-sweep {
+  animation: svgScanSweep 2.8s ease-in-out infinite;
+}
+
+.svg-float-y {
+  animation: svgFloatY 3.2s ease-in-out infinite;
+}
+
+.svg-packet-left {
+  animation: svgPacketLeft 2.6s ease-in-out infinite;
+}
+
+.svg-packet-right {
+  animation: svgPacketRight 2.6s ease-in-out infinite;
+}
+
+@keyframes snakeDashFlow {
+  to {
+    stroke-dashoffset: -28;
+  }
+}
+
+.snake-road-flow {
+  stroke-dasharray: 6 8;
+  animation: snakeDashFlow 1.15s linear infinite;
 }
 
 @utility no-scrollbar {

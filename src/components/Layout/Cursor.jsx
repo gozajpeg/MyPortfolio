@@ -5,78 +5,75 @@ export default function CustomCursor() {
   const cursorRef = useRef(null);
   const innerRef = useRef(null);
   const isPointerRef = useRef(false);
-  const isClickingRef = useRef(false);
-  const [isVisible, setIsVisible] = useState(false);
+  const isVisibleRef = useRef(false);
+  const lastTargetRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Only activate on devices with a fine mouse pointer
-    if (typeof window !== 'undefined' && !window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    if (
+      typeof window !== 'undefined' &&
+      !window.matchMedia('(hover: hover) and (pointer: fine)').matches
+    ) {
       return;
     }
 
-    const updateScale = () => {
-      if (!innerRef.current) return;
-      const scale = isClickingRef.current ? 0.85 : isPointerRef.current ? 1.18 : 1;
-      innerRef.current.style.transform = `scale(${scale})`;
+    const handlePointerMove = (e) => {
+      const node = cursorRef.current;
+      if (!node) return;
+      node.style.transform = `translate3d(${e.clientX - 3}px, ${e.clientY - 3}px, 0)`;
+
+      if (!isVisibleRef.current) {
+        isVisibleRef.current = true;
+        node.style.opacity = '1';
+      }
+
+      const target = e.target;
+      if (target && target !== lastTargetRef.current) {
+        lastTargetRef.current = target;
+        const clickable = Boolean(
+          target.closest?.(
+            'a, button, [role="button"], input, textarea, [tabindex="0"], [data-interactive="true"]'
+          )
+        );
+        if (isPointerRef.current !== clickable) {
+          isPointerRef.current = clickable;
+          if (innerRef.current) {
+            innerRef.current.style.transform = clickable
+              ? 'scale(1.16)'
+              : 'scale(1)';
+          }
+        }
+      }
     };
 
-    const handleMouseMove = (e) => {
-      if (!cursorRef.current) return;
-      cursorRef.current.style.transform = `translate3d(${e.clientX - 3}px, ${e.clientY - 3}px, 0)`;
-      if (cursorRef.current.style.opacity !== '1') {
+    const handleMouseLeave = () => {
+      if (cursorRef.current) {
+        isVisibleRef.current = false;
+        cursorRef.current.style.opacity = '0';
+      }
+    };
+
+    const handleMouseEnter = () => {
+      if (cursorRef.current) {
+        isVisibleRef.current = true;
         cursorRef.current.style.opacity = '1';
       }
     };
 
-    const handleMouseOver = (e) => {
-      const target = e.target;
-      const clickable = Boolean(
-        target?.closest('a, button, [role="button"], input, textarea, [tabindex="0"], [data-interactive="true"]')
-      );
-      if (isPointerRef.current !== clickable) {
-        isPointerRef.current = clickable;
-        updateScale();
-      }
-    };
+    setMounted(true);
 
-    const handleMouseDown = () => {
-      isClickingRef.current = true;
-      updateScale();
-    };
-
-    const handleMouseUp = () => {
-      isClickingRef.current = false;
-      updateScale();
-    };
-
-    const handleMouseLeave = () => {
-      if (cursorRef.current) cursorRef.current.style.opacity = '0';
-    };
-
-    const handleMouseEnter = () => {
-      if (cursorRef.current) cursorRef.current.style.opacity = '1';
-    };
-
-    setIsVisible(true);
-
-    window.addEventListener('mousemove', handleMouseMove, { passive: true });
-    window.addEventListener('mousedown', handleMouseDown, { passive: true });
-    window.addEventListener('mouseup', handleMouseUp, { passive: true });
-    document.addEventListener('mouseover', handleMouseOver, { passive: true });
+    window.addEventListener('pointermove', handlePointerMove, { passive: true });
     document.addEventListener('mouseleave', handleMouseLeave, { passive: true });
     document.addEventListener('mouseenter', handleMouseEnter, { passive: true });
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mouseup', handleMouseUp);
-      document.removeEventListener('mouseover', handleMouseOver);
+      window.removeEventListener('pointermove', handlePointerMove);
       document.removeEventListener('mouseleave', handleMouseLeave);
       document.removeEventListener('mouseenter', handleMouseEnter);
     };
   }, []);
 
-  if (!isVisible) return null;
+  if (!mounted) return null;
 
   const cursorNode = (
     <div
@@ -85,14 +82,13 @@ export default function CustomCursor() {
       style={{
         transform: 'translate3d(-100px, -100px, 0)',
         opacity: 0,
-        transition: 'opacity 0.15s ease',
       }}
     >
       <div
         ref={innerRef}
         style={{
           transform: 'scale(1)',
-          transition: 'transform 0.14s cubic-bezier(0.22, 1, 0.36, 1)',
+          transition: 'transform 0.12s cubic-bezier(0.22, 1, 0.36, 1)',
           transformOrigin: '3px 3px',
         }}
       >
@@ -102,16 +98,14 @@ export default function CustomCursor() {
           viewBox="0 0 22 22"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="drop-shadow-[0_2px_6px_rgba(0,0,0,0.22)]"
         >
           <path
             d="M3 2L19 11L11.5 13.5L8 20L3 2Z"
             style={{
               fill: 'var(--color-ink)',
               stroke: 'var(--color-bg)',
-              transition: 'fill 0.25s ease, stroke 0.25s ease',
             }}
-            strokeWidth="1.75"
+            strokeWidth="1.8"
             strokeLinejoin="round"
           />
         </svg>
@@ -119,5 +113,7 @@ export default function CustomCursor() {
     </div>
   );
 
-  return typeof document !== 'undefined' ? createPortal(cursorNode, document.body) : null;
+  return typeof document !== 'undefined'
+    ? createPortal(cursorNode, document.body)
+    : null;
 }

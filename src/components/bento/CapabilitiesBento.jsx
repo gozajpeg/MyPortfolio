@@ -1,5 +1,3 @@
-import { motion } from 'framer-motion';
-
 const CAPABILITIES = [
   {
     id: 'saas',
@@ -31,7 +29,7 @@ const CAPABILITIES = [
   },
 ];
 
-/* ── CONTINUOUS LOOPED WIREFRAME ANIMATIONS FOR EACH DOMAIN ── */
+/* ── CONTINUOUS LOOPED WIREFRAME ANIMATIONS FOR EACH DOMAIN (CSS GPU-Composited) ── */
 function DomainLoopGraphic({ id }) {
   if (id === 'saas') {
     return (
@@ -81,31 +79,24 @@ function DomainLoopGraphic({ id }) {
         <rect x="12" y="46" width="21" height="3" rx="1.5" fill="currentColor" fillOpacity="0.2" />
 
         {/* Looped Analytics Curve */}
-        <motion.path
+        <path
           d="M 58 64 C 82 62, 92 42, 118 46 C 144 50, 156 30, 182 32 C 194 33, 200 26, 204 26"
+          pathLength="1"
           stroke="currentColor"
           strokeWidth="1.6"
           strokeLinecap="round"
-          animate={{
-            pathLength: [0, 1, 1, 0],
-            opacity: [0.3, 1, 1, 0.3],
-          }}
-          transition={{
-            duration: 4.4,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          className="svg-draw-loop"
         />
 
-        {/* Animated Metric Pillars */}
+        {/* Animated Metric Nodes */}
         {[
-          { x: 64, h: 16, d: 0 },
-          { x: 96, h: 26, d: 0.2 },
-          { x: 128, h: 20, d: 0.4 },
-          { x: 160, h: 32, d: 0.6 },
-          { x: 192, h: 38, d: 0.8 },
+          { x: 64, h: 16, d: '0s' },
+          { x: 96, h: 26, d: '0.2s' },
+          { x: 128, h: 20, d: '0.4s' },
+          { x: 160, h: 32, d: '0.6s' },
+          { x: 192, h: 38, d: '0.8s' },
         ].map((bar, i) => (
-          <motion.circle
+          <circle
             key={i}
             cx={bar.x}
             cy={70 - bar.h}
@@ -113,16 +104,8 @@ function DomainLoopGraphic({ id }) {
             fill="var(--color-surface)"
             stroke="currentColor"
             strokeWidth="1.4"
-            animate={{
-              scale: [0.8, 1.25, 0.8],
-              opacity: [0.35, 1, 0.35],
-            }}
-            transition={{
-              duration: 2.4,
-              delay: bar.d,
-              repeat: Infinity,
-              ease: 'easeInOut',
-            }}
+            className="svg-pulse-node"
+            style={{ animationDelay: bar.d }}
           />
         ))}
       </svg>
@@ -161,40 +144,27 @@ function DomainLoopGraphic({ id }) {
         </text>
 
         {/* Looped Typed Command Bar */}
-        <motion.rect
+        <rect
           x="28"
           y="23"
+          width="88"
           height="4"
           rx="2"
           fill="currentColor"
-          animate={{
-            width: [0, 88, 88, 0],
-            opacity: [0.4, 0.95, 0.95, 0.2],
-          }}
-          transition={{
-            duration: 4.0,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          className="svg-bar-scalex"
         />
 
         {/* Execution Output Stream */}
-        <motion.rect
+        <rect
           x="16"
           y="40"
+          width="140"
           height="3.5"
           rx="1.75"
           fill="currentColor"
-          animate={{
-            width: [0, 140, 140, 0],
-            opacity: [0, 0.45, 0.45, 0],
-          }}
-          transition={{
-            duration: 4.0,
-            delay: 0.45,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          fillOpacity="0.45"
+          className="svg-bar-scalex"
+          style={{ animationDelay: '0.35s' }}
         />
 
         {/* Progress Scan Bar */}
@@ -207,57 +177,36 @@ function DomainLoopGraphic({ id }) {
           fill="currentColor"
           fillOpacity="0.12"
         />
-        <motion.rect
+        <rect
           x="16"
           y="55"
+          width="156"
           height="4"
           rx="2"
           fill="currentColor"
-          animate={{
-            width: [0, 156, 156, 0],
-          }}
-          transition={{
-            duration: 4.0,
-            delay: 0.7,
-            repeat: Infinity,
-            ease: [0.22, 1, 0.36, 1],
-          }}
+          className="svg-bar-scalex"
+          style={{ animationDelay: '0.6s' }}
         />
 
         {/* Verified Check Badge */}
-        <motion.circle
+        <circle
           cx="192"
           cy="57"
           r="7"
           stroke="currentColor"
           strokeWidth="1.4"
-          animate={{
-            scale: [0.7, 1.05, 1, 0.7],
-            opacity: [0.2, 1, 1, 0.2],
-          }}
-          transition={{
-            duration: 4.0,
-            delay: 1.1,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          className="svg-pulse-node"
+          style={{ animationDelay: '0.9s' }}
         />
-        <motion.path
+        <path
           d="M 189 57 L 191 59 L 195.5 54.5"
+          pathLength="1"
           stroke="currentColor"
           strokeWidth="1.4"
           strokeLinecap="round"
           strokeLinejoin="round"
-          animate={{
-            pathLength: [0, 1, 1, 0],
-            opacity: [0, 1, 1, 0],
-          }}
-          transition={{
-            duration: 4.0,
-            delay: 1.2,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          className="svg-draw-loop"
+          style={{ animationDelay: '1s' }}
         />
       </svg>
     );
@@ -271,7 +220,7 @@ function DomainLoopGraphic({ id }) {
         fill="none"
         aria-hidden="true"
       >
-        {/* Minimalist Mobile Frame (Centered Horizontal Showcase) */}
+        {/* Minimalist Mobile Frame */}
         <rect
           x="74"
           y="4"
@@ -294,7 +243,7 @@ function DomainLoopGraphic({ id }) {
         />
 
         {/* Animated Floating UI Cards Inside Mobile Viewport */}
-        <motion.rect
+        <rect
           x="84"
           y="20"
           width="52"
@@ -302,17 +251,9 @@ function DomainLoopGraphic({ id }) {
           rx="4"
           stroke="currentColor"
           strokeWidth="1.25"
-          animate={{
-            y: [22, 18, 22],
-            opacity: [0.55, 1, 0.55],
-          }}
-          transition={{
-            duration: 3.2,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          className="svg-float-y"
         />
-        <motion.rect
+        <rect
           x="84"
           y="44"
           width="52"
@@ -320,39 +261,23 @@ function DomainLoopGraphic({ id }) {
           rx="4"
           stroke="currentColor"
           strokeWidth="1.2"
-          animate={{
-            y: [46, 42, 46],
-            opacity: [0.3, 0.75, 0.3],
-          }}
-          transition={{
-            duration: 3.2,
-            delay: 0.3,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
+          className="svg-float-y"
+          style={{ animationDelay: '0.35s' }}
         />
 
         {/* Touch Gesture Pulse Ring */}
-        <motion.circle
+        <circle
           cx="110"
           cy="66"
-          r="5"
+          r="6"
           stroke="currentColor"
           strokeWidth="1.2"
-          animate={{
-            r: [3, 9],
-            opacity: [0.8, 0],
-          }}
-          transition={{
-            duration: 2.0,
-            repeat: Infinity,
-            ease: 'easeOut',
-          }}
+          className="svg-ripple-out"
         />
         <circle cx="110" cy="66" r="2.2" fill="currentColor" />
 
         {/* Ambient Side Motion Guides */}
-        <motion.line
+        <line
           x1="46"
           y1="28"
           x2="62"
@@ -360,10 +285,9 @@ function DomainLoopGraphic({ id }) {
           stroke="currentColor"
           strokeWidth="1.2"
           strokeLinecap="round"
-          animate={{ opacity: [0.15, 0.55, 0.15], x1: [42, 48, 42] }}
-          transition={{ duration: 3.2, repeat: Infinity, ease: 'easeInOut' }}
+          className="svg-pulse-node"
         />
-        <motion.line
+        <line
           x1="158"
           y1="52"
           x2="174"
@@ -371,8 +295,8 @@ function DomainLoopGraphic({ id }) {
           stroke="currentColor"
           strokeWidth="1.2"
           strokeLinecap="round"
-          animate={{ opacity: [0.15, 0.55, 0.15], x2: [178, 172, 178] }}
-          transition={{ duration: 3.2, delay: 0.4, repeat: Infinity, ease: 'easeInOut' }}
+          className="svg-pulse-node"
+          style={{ animationDelay: '0.4s' }}
         />
       </svg>
     );
@@ -402,21 +326,14 @@ function DomainLoopGraphic({ id }) {
       <rect x="18" y="45" width="28" height="3" rx="1.5" fill="currentColor" fillOpacity="0.3" />
 
       {/* Center Node: API / Auth Gateway */}
-      <motion.circle
+      <circle
         cx="114"
         cy="42"
         r="14"
         fill="var(--color-surface)"
         stroke="currentColor"
         strokeWidth="1.4"
-        animate={{
-          scale: [0.95, 1.08, 0.95],
-        }}
-        transition={{
-          duration: 2.8,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
+        className="svg-pulse-node"
       />
       <text
         x="114"
@@ -448,34 +365,20 @@ function DomainLoopGraphic({ id }) {
       <line x1="128" y1="42" x2="160" y2="42" stroke="currentColor" strokeOpacity="0.2" strokeWidth="1.4" />
 
       {/* Traveling Request/Response Data Packets */}
-      <motion.circle
+      <circle
+        cx="66"
         cy="42"
         r="2.8"
         fill="currentColor"
-        animate={{
-          cx: [66, 98, 66],
-          opacity: [0.3, 1, 0.3],
-        }}
-        transition={{
-          duration: 2.6,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
+        className="svg-packet-left"
       />
-      <motion.circle
+      <circle
+        cx="130"
         cy="42"
         r="2.8"
         fill="currentColor"
-        animate={{
-          cx: [130, 158, 130],
-          opacity: [0.3, 1, 0.3],
-        }}
-        transition={{
-          duration: 2.6,
-          delay: 0.4,
-          repeat: Infinity,
-          ease: 'easeInOut',
-        }}
+        className="svg-packet-right"
+        style={{ animationDelay: '0.4s' }}
       />
     </svg>
   );
@@ -527,4 +430,3 @@ export default function CapabilitiesBento() {
     </section>
   );
 }
-

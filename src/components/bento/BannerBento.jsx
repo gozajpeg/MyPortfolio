@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { getActiveBanner, fallbackBannerQuote } from '../../data/Banner/banner';
 
 const COLS = 28;
 const ROWS = 7;
@@ -59,7 +60,6 @@ export function SquareMatrixBackground() {
             const cx = (c + 0.5) * cellW;
             const cy = (r + 0.5) * cellH;
 
-            // Radial edge fade + soft center text clearance (replaces expensive CSS mask + blur-xl)
             const nx = (cx / width - 0.5) * 2;
             const ny = (cy / height - 0.5) * 2;
             const distEdge = Math.hypot(nx, ny);
@@ -67,8 +67,7 @@ export function SquareMatrixBackground() {
             const centerDip =
               0.38 + 0.62 * Math.min(1, Math.hypot(nx * 1.35, ny * 2.1));
 
-            const wave =
-              0.5 + 0.5 * Math.sin(t - (r + c) * 0.28);
+            const wave = 0.5 + 0.5 * Math.sin(t - (r + c) * 0.28);
             const scale = 0.62 + 0.38 * wave;
             const alpha = (0.06 + 0.32 * wave) * edgeFade * centerDip;
 
@@ -131,36 +130,93 @@ export function SquareMatrixBackground() {
 }
 
 /**
- * Mobile Merged Banner — Full-bleed cover banner merged into the top of the Profile Card (`HeroBento`) on screens < lg
- */
-export function MobileMergedBanner() {
-  return (
-    <div className="relative flex lg:hidden items-center justify-center text-center overflow-hidden -mx-5 -mt-5 sm:-mx-6 sm:-mt-6 px-5 py-9 mb-1 border-b border-border rounded-t-2xl">
-      <SquareMatrixBackground />
-
-      <h2 className="relative z-10 font-sans text-xl sm:text-2xl font-bold text-ink tracking-tight leading-snug m-0 max-w-md">
-        Building and shipping systems with confidence.
-      </h2>
-    </div>
-  );
-}
-
-/**
- * Desktop Banner — Transparent container with dense Square-Matrix looped animation
- * and centered bold headline, placed right before `About` on screens >= lg.
+ * Dismissible Release Banner + Fallback Square-Matrix Quote Banner.
+ * Driven by `src/data/Banner/banner.js`.
+ * Placed right above the `About` section. When dismissed (`×`), smoothly reveals the quote banner underneath.
  */
 export default function BannerBento() {
+  const activeBanner = getActiveBanner();
+  const [isDismissed, setIsDismissed] = useState(false);
+
+  const showAnnouncement = Boolean(activeBanner && !isDismissed);
+
   return (
     <section
       id="banner"
-      aria-label="Statement Banner"
-      className="relative hidden lg:flex items-center justify-center text-center overflow-hidden bg-transparent py-11 px-6"
+      aria-label={showAnnouncement ? `${activeBanner.title} Release Banner` : 'Statement Banner'}
+      className="relative flex items-center justify-center overflow-hidden bg-transparent h-[136px] sm:h-[168px] px-4 sm:px-6"
     >
+      {/* Subtle Square-Matrix Wave Background */}
       <SquareMatrixBackground />
 
-      <h2 className="relative z-10 font-sans text-2xl xl:text-4xl font-bold text-ink tracking-tight leading-tight m-0 max-w-2xl">
-        Building and shipping systems with confidence.
-      </h2>
+      {showAnnouncement ? (
+        <div className="relative z-10 w-full h-full flex flex-row items-center justify-center gap-5 sm:gap-8">
+          {/* Dismiss (×) Button */}
+          <button
+            type="button"
+            onClick={() => setIsDismissed(true)}
+            aria-label="Dismiss release announcement"
+            title="Dismiss announcement"
+            className="absolute top-2 right-0 sm:top-3 sm:right-1 w-6 h-6 rounded-full border border-border hover:border-border-strong bg-surface/80 hover:bg-surface-hover text-ink-muted hover:text-ink flex items-center justify-center transition-colors cursor-pointer"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              className="w-3 h-3"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+
+          {/* Left: Barstile Logo + Oversized Bold "V1" Display Lockup */}
+          <div className="flex items-center gap-2.5 sm:gap-3.5 select-none shrink-0">
+            {activeBanner.logo && (
+              <img
+                src={activeBanner.logo}
+                alt={activeBanner.title}
+                width="48"
+                height="48"
+                decoding="async"
+                className="w-10 h-10 sm:w-12 sm:h-12 object-contain shrink-0"
+              />
+            )}
+            <span className="font-sans text-6xl sm:text-8xl xl:text-[96px] font-black tracking-tighter leading-[0.8] text-ink">
+              {activeBanner.version}
+            </span>
+          </div>
+
+          {/* Right: Compact, Readable Title, Subtitle & Simplified Button */}
+          <div className="flex flex-col items-start text-left gap-2 min-w-0">
+            <div className="flex flex-col gap-0.5">
+              <h2 className="font-sans text-sm sm:text-base font-bold text-ink tracking-tight leading-tight m-0">
+                {activeBanner.title}
+              </h2>
+              <p className="font-sans text-xs sm:text-sm font-normal text-ink-muted leading-tight m-0">
+                {activeBanner.subtitle}
+              </p>
+            </div>
+
+            <a
+              href={activeBanner.ctaUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="h-8 px-3.5 rounded-lg bg-ink text-bg font-sans text-[11px] sm:text-xs font-semibold hover:opacity-90 transition-opacity inline-flex items-center justify-center no-underline whitespace-nowrap"
+            >
+              {activeBanner.ctaText}
+            </a>
+          </div>
+        </div>
+      ) : (
+        <h2 className="relative z-10 font-sans text-xl sm:text-2xl xl:text-4xl font-bold text-ink tracking-tight leading-tight text-center m-0 max-w-2xl">
+          {fallbackBannerQuote}
+        </h2>
+      )}
     </section>
   );
 }

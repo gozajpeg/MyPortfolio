@@ -228,12 +228,15 @@ export default function BentoLayout() {
               transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
               className="grid grid-cols-1 lg:grid-cols-[330px_minmax(0,1fr)] xl:grid-cols-[350px_minmax(0,1fr)] gap-5 lg:gap-6 items-start"
             >
-              {/* Left 30% Column: Resume Sidebar + Icon-Based Links */}
-              <div className="lg:sticky lg:top-12 w-full">
+              {/* Left 30% Column: Resume Sidebar + Desktop GitHub Activity Stats */}
+              <div className="lg:sticky lg:top-12 w-full flex flex-col gap-7">
                 <HeroBento />
+                <div className="hidden lg:block">
+                  <GitHubBento />
+                </div>
               </div>
 
-              {/* Right 70% Column: Desktop Banner + Short About + Top 3 Recent Projects + What I Build + How I Build + Stack + GitHub Activity + CTA/Contact */}
+              {/* Right 70% Column: Release/Quote Banner + Short About + Top 3 Recent Projects + What I Build + How I Build + Stack + Mobile GitHub Activity + CTA/Contact */}
               <div className="w-full min-w-0 flex flex-col gap-7">
                 <BannerBento />
                 <AboutBento />
@@ -241,7 +244,9 @@ export default function BentoLayout() {
                 <CapabilitiesBento />
                 <WorkflowBento />
                 <SkillsBento />
-                <GitHubBento />
+                <div className="lg:hidden">
+                  <GitHubBento />
+                </div>
                 <SocialsBento />
               </div>
             </motion.div>

@@ -8,7 +8,6 @@ export default function SocialsBento() {
   const [status, setStatus] = useState('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [hasSent, setHasSent] = useState(false);
-  const [emailCopied, setEmailCopied] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -30,16 +29,6 @@ export default function SocialsBento() {
       window.removeEventListener('open-quick-message', handleQuickMessage);
     };
   }, []);
-
-  const handleCopyEmail = async () => {
-    try {
-      await navigator.clipboard.writeText('ragoza.builds@gmail.com');
-      setEmailCopied(true);
-      setTimeout(() => setEmailCopied(false), 2000);
-    } catch {
-      window.location.href = 'mailto:ragoza.builds@gmail.com';
-    }
-  };
 
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
@@ -98,38 +87,17 @@ export default function SocialsBento() {
       className="theme-surface rounded-2xl border p-6 sm:p-8 flex flex-col gap-6"
     >
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-start">
-        {/* Left Column: CTA + Direct Contact Channels */}
-        <div className="md:col-span-5 flex flex-col justify-between gap-5">
-          <div className="flex flex-col gap-2">
-            <span className="font-sans text-xs font-medium text-ink-muted">
-              Available for projects &amp; full-time roles
-            </span>
-            <h2 className="font-sans text-xl sm:text-2xl font-bold text-ink tracking-tight m-0 leading-snug">
-              Let&apos;s build something together.
-            </h2>
-            <p className="font-sans text-xs sm:text-sm text-ink-soft leading-relaxed m-0">
-              Reach out directly via email, socials, or send a quick message straight to my Telegram.
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <button
-              type="button"
-              onClick={handleCopyEmail}
-              aria-label="Copy email address ragoza.builds@gmail.com"
-              className="flex h-10 w-full items-center justify-between gap-2 rounded-xl border border-border hover:border-border-strong bg-surface-hover/35 hover:bg-surface-hover px-3.5 text-left transition-colors cursor-pointer"
-            >
-              <span className="font-sans text-xs font-semibold text-ink truncate">
-                ragoza.builds@gmail.com
-              </span>
-              <span
-                aria-live="polite"
-                className="font-sans text-[11px] font-medium text-ink-soft shrink-0"
-              >
-                {emailCopied ? 'Copied' : 'Copy email'}
-              </span>
-            </button>
-          </div>
+        {/* Left Column: CTA */}
+        <div className="md:col-span-5 flex flex-col justify-center gap-2">
+          <span className="font-sans text-xs font-medium text-ink-muted">
+            Available for projects &amp; full-time roles
+          </span>
+          <h2 className="font-sans text-xl sm:text-2xl font-bold text-ink tracking-tight m-0 leading-snug">
+            Let&apos;s build something together.
+          </h2>
+          <p className="font-sans text-xs sm:text-sm text-ink-soft leading-relaxed m-0">
+            Reach out directly via email, socials, or send a quick message straight to my Telegram.
+          </p>
         </div>
 
         {/* Right Column: Direct Message Form */}
